@@ -4,6 +4,23 @@
   "description": "Suite de utilidades canonicas y de alto rendimiento para proyectos que operan en o con Chile",
   "author": "urzuaf",
   "license": "MIT",
+  "homepage": "https://github.com/urzuaf/clutils#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/urzuaf/clutils.git",
+    "directory": "packages/ts"
+  },
+  "bugs": {
+    "url": "https://github.com/urzuaf/clutils/issues"
+  },
+  "keywords": [
+    "chile",
+    "rut",
+    "run",
+    "clutils",
+    "chilean",
+    "utilities"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -21,7 +38,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsup",
