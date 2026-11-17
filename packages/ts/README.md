@@ -1,8 +1,8 @@
-# clutils (TypeScript / JavaScript)
+# @urzuaf/clutils (TypeScript / JavaScript)
 
 Suite de utilidades canónicas, de alto rendimiento y cero dependencias externas para proyectos que operan en o con Chile.
 
-[![npm version](https://img.shields.io/npm/v/clutils.svg)](https://www.npmjs.com/package/clutils)
+[![npm version](https://img.shields.io/npm/v/@urzuaf/clutils.svg)](https://www.npmjs.com/package/@urzuaf/clutils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-success.svg)](#)
 
@@ -20,21 +20,21 @@ Suite de utilidades canónicas, de alto rendimiento y cero dependencias externas
 
 ```bash
 # npm
-npm install clutils
+npm install @urzuaf/clutils
 
 # pnpm
-pnpm add clutils
+pnpm add @urzuaf/clutils
 
 # bun
-bun add clutils
+bun add @urzuaf/clutils
 
 # yarn
-yarn add clutils
+yarn add @urzuaf/clutils
 ```
 
 ---
 
-## Módulo de RUT (`clutils/rut`)
+## Módulo de RUT (`@urzuaf/clutils/rut`)
 
 Manejo integral de Rol Único Tributario (RUT / RUN) chileno: validación detallada, sanitización, formateo, enmascaramiento y generación sintética.
 
@@ -53,15 +53,15 @@ import {
   generate,
   generatePerson,
   generateBusiness
-} from 'clutils/rut';
+} from '@urzuaf/clutils/rut';
 
 // O desde la raíz:
-// import { rut } from 'clutils';
+// import { rut } from '@urzuaf/clutils';
 ```
 
 ```javascript
 // CommonJS
-const { validate, clean, format, mask } = require('clutils/rut');
+const { validate, clean, format, mask } = require('@urzuaf/clutils/rut');
 ```
 
 ---
