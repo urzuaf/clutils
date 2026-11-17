@@ -8,8 +8,8 @@
       "description": "Rango representativo de personas naturales vivas en Chile"
     },
     "business": {
-      "min": 60000000,
-      "max": 90000000,
+      "min": 70000000,
+      "max": 80000000,
       "description": "Rango representativo de personas juridicas y empresas en Chile"
     },
     "general": {

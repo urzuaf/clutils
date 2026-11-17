@@ -1,0 +1,36 @@
+{
+  "name": "clutils",
+  "version": "0.1.0",
+  "description": "Suite de utilidades canonicas y de alto rendimiento para proyectos que operan en o con Chile",
+  "author": "urzuaf",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./rut": {
+      "types": "./dist/rut/index.d.ts",
+      "import": "./dist/rut/index.js",
+      "require": "./dist/rut/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
