@@ -7,7 +7,7 @@ El objetivo de `clutils` es evitar reimplementar desde cero en cada proyecto val
 ## 📦 Ecosistemas Soportados
 
 - **Go:** `github.com/urzuaf/clutils/packages/go`
-- **TypeScript / JavaScript:** `clutils` (npm)
+- **TypeScript / JavaScript:** `@urzuaf/clutils` (npm)
 
 ---
 
@@ -20,7 +20,7 @@ go get github.com/urzuaf/clutils/packages/go
 
 ### TypeScript / JavaScript (Node, Bun, Deno, Navegador)
 ```bash
-npm install clutils
+npm install @urzuaf/clutils
 ```
 
 ---
@@ -38,7 +38,7 @@ import "github.com/urzuaf/clutils/packages/go/rut"
 
 **TypeScript / JavaScript:**
 ```ts
-import { validate, clean, format, split, mask, generate } from 'clutils/rut';
+import { validate, clean, format, split, mask, generate } from '@urzuaf/clutils/rut';
 ```
 
 ---
