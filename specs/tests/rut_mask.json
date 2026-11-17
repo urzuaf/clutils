@@ -1,0 +1,41 @@
+{
+  "description": "Vectores de prueba canonicos compartidos para ofuscacion (mask) de RUT chileno",
+  "cases": [
+    {
+      "input": "18123458K",
+      "expected_default": "**.***.458-K",
+      "expected_plain": "*****458K",
+      "description": "RUT estandar de 8 digitos enmascarado con ultimos 4 caracteres visibles"
+    },
+    {
+      "input": "18.123.458-k",
+      "expected_default": "**.***.458-K",
+      "expected_plain": "*****458K",
+      "description": "RUT con formato y k minuscula enmascarado"
+    },
+    {
+      "input": "51234561",
+      "expected_default": "*.***.456-1",
+      "expected_plain": "****4561",
+      "description": "RUT antiguo de 7 digitos de cuerpo enmascarado"
+    },
+    {
+      "input": "091234564",
+      "expected_default": "**.***.456-4",
+      "expected_plain": "*****4564",
+      "description": "RUT con cero inicial enmascarado"
+    },
+    {
+      "input": "1-9",
+      "expected_default": "1-9",
+      "expected_plain": "19",
+      "description": "RUT corto menor o igual a cantidad de caracteres visibles no se ofusca"
+    },
+    {
+      "input": "",
+      "expected_default": "",
+      "expected_plain": "",
+      "description": "Cadena vacia retorna vacio"
+    }
+  ]
+}

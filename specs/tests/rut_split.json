@@ -1,0 +1,101 @@
+{
+  "description": "Vectores de prueba canonicos compartidos para split de RUT chileno",
+  "cases": [
+    {
+      "input": "18.123.458-K",
+      "expected_body": "18123458",
+      "expected_dv": "K",
+      "expected_int": 18123458,
+      "is_error": false,
+      "description": "RUT formal estandar de 8 digitos con K mayuscula"
+    },
+    {
+      "input": "18123458k",
+      "expected_body": "18123458",
+      "expected_dv": "K",
+      "expected_int": 18123458,
+      "is_error": false,
+      "description": "RUT plano con k minuscula normalizada a mayuscula"
+    },
+    {
+      "input": "09.123.456-4",
+      "expected_body": "09123456",
+      "expected_dv": "4",
+      "expected_int": 9123456,
+      "is_error": false,
+      "description": "RUT con cero inicial preservado en body string"
+    },
+    {
+      "input": "1-9",
+      "expected_body": "1",
+      "expected_dv": "9",
+      "expected_int": 1,
+      "is_error": false,
+      "description": "RUT de longitud minima de 1 digito de cuerpo"
+    },
+    {
+      "input": "40-K",
+      "expected_body": "40",
+      "expected_dv": "K",
+      "expected_int": 40,
+      "is_error": false,
+      "description": "RUT corto de 2 digitos de cuerpo con DV K"
+    },
+    {
+      "input": "  12345678-5  ",
+      "expected_body": "12345678",
+      "expected_dv": "5",
+      "expected_int": 12345678,
+      "is_error": false,
+      "description": "RUT con espacios en blanco limpios"
+    },
+    {
+      "input": "",
+      "expected_body": null,
+      "expected_dv": null,
+      "expected_int": null,
+      "is_error": true,
+      "description": "Cadena vacia retorna error"
+    },
+    {
+      "input": "   ",
+      "expected_body": null,
+      "expected_dv": null,
+      "expected_int": null,
+      "is_error": true,
+      "description": "Cadena de solo espacios retorna error"
+    },
+    {
+      "input": "1",
+      "expected_body": null,
+      "expected_dv": null,
+      "expected_int": null,
+      "is_error": true,
+      "description": "Cadena de 1 caracter no alcanza para cuerpo y DV"
+    },
+    {
+      "input": "K",
+      "expected_body": null,
+      "expected_dv": null,
+      "expected_int": null,
+      "is_error": true,
+      "description": "Solo DV sin cuerpo retorna error"
+    },
+    {
+      "input": "-K",
+      "expected_body": null,
+      "expected_dv": null,
+      "expected_int": null,
+      "is_error": true,
+      "description": "Guion y DV sin cuerpo retorna error"
+    },
+    {
+      "input": "-",
+      "expected_body": null,
+      "expected_dv": null,
+      "expected_int": null,
+      "is_error": true,
+      "description": "Solo guion retorna error"
+    }
+  ]
+}

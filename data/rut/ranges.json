@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Rangos numericos canonicos compartidos para generacion y clasificacion de RUT chileno",
+  "ranges": {
+    "person": {
+      "min": 5000000,
+      "max": 28000000,
+      "description": "Rango representativo de personas naturales vivas en Chile"
+    },
+    "business": {
+      "min": 60000000,
+      "max": 90000000,
+      "description": "Rango representativo de personas juridicas y empresas en Chile"
+    },
+    "general": {
+      "min": 1000000,
+      "max": 28000000,
+      "description": "Rango por defecto seguro para generacion general"
+    }
+  }
+}

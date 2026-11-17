@@ -1,0 +1,285 @@
+{
+  "description": "Vectores de prueba canonicos compartidos para validacion y limpieza de RUT chileno",
+  "cases": [
+    {
+      "input": "12.345.678-5",
+      "expected_clean": "123456785",
+      "expected_body": "12345678",
+      "expected_dv": "5",
+      "is_valid": true,
+      "description": "RUT estandar valido con puntos y guion"
+    },
+    {
+      "input": "12345678-5",
+      "expected_clean": "123456785",
+      "expected_body": "12345678",
+      "expected_dv": "5",
+      "is_valid": true,
+      "description": "RUT valido sin puntos con guion"
+    },
+    {
+      "input": "123456785",
+      "expected_clean": "123456785",
+      "expected_body": "12345678",
+      "expected_dv": "5",
+      "is_valid": true,
+      "description": "RUT valido plano continuo sin separadores"
+    },
+    {
+      "input": "  12.345.678-5  ",
+      "expected_clean": "123456785",
+      "expected_body": "12345678",
+      "expected_dv": "5",
+      "is_valid": true,
+      "description": "RUT valido con espacios en blanco al inicio y al final"
+    },
+    {
+      "input": "18.123.458-K",
+      "expected_clean": "18123458K",
+      "expected_body": "18123458",
+      "expected_dv": "K",
+      "is_valid": true,
+      "description": "RUT valido con DV K mayuscula formal"
+    },
+    {
+      "input": "18.123.458-k",
+      "expected_clean": "18123458K",
+      "expected_body": "18123458",
+      "expected_dv": "K",
+      "is_valid": true,
+      "description": "RUT valido con DV k minuscula (debe normalizar a mayuscula)"
+    },
+    {
+      "input": "18123458k",
+      "expected_clean": "18123458K",
+      "expected_body": "18123458",
+      "expected_dv": "K",
+      "is_valid": true,
+      "description": "RUT valido plano con k minuscula"
+    },
+    {
+      "input": "18.123.466-0",
+      "expected_clean": "181234660",
+      "expected_body": "18123466",
+      "expected_dv": "0",
+      "is_valid": true,
+      "description": "RUT valido con residuo 11 donde DV resulta 0"
+    },
+    {
+      "input": "11.111.111-1",
+      "expected_clean": "111111111",
+      "expected_body": "11111111",
+      "expected_dv": "1",
+      "is_valid": true,
+      "description": "RUT valido con digitos repetidos"
+    },
+    {
+      "input": "5.123.456-1",
+      "expected_clean": "51234561",
+      "expected_body": "5123456",
+      "expected_dv": "1",
+      "is_valid": true,
+      "description": "RUT antiguo/bajo de 7 digitos de cuerpo valido"
+    },
+    {
+      "input": "5123456-1",
+      "expected_clean": "51234561",
+      "expected_body": "5123456",
+      "expected_dv": "1",
+      "is_valid": true,
+      "description": "RUT de 7 digitos sin puntos con guion valido"
+    },
+    {
+      "input": "40-K",
+      "expected_clean": "40K",
+      "expected_body": "40",
+      "expected_dv": "K",
+      "is_valid": true,
+      "description": "RUT de longitud minima (2 digitos de cuerpo) con DV K"
+    },
+    {
+      "input": "1-9",
+      "expected_clean": "19",
+      "expected_body": "1",
+      "expected_dv": "9",
+      "is_valid": true,
+      "description": "RUT de 1 solo digito de cuerpo con DV valido"
+    },
+    {
+      "input": "60.805.000-0",
+      "expected_clean": "608050000",
+      "expected_body": "60805000",
+      "expected_dv": "0",
+      "is_valid": true,
+      "description": "RUT de persona juridica institucional (PUC) valido"
+    },
+    {
+      "input": "76.086.428-5",
+      "expected_clean": "760864285",
+      "expected_body": "76086428",
+      "expected_dv": "5",
+      "is_valid": true,
+      "description": "RUT de empresa (> 70 millones) valido"
+    },
+    {
+      "input": "09.123.456-4",
+      "expected_clean": "091234564",
+      "expected_body": "09123456",
+      "expected_dv": "4",
+      "is_valid": true,
+      "description": "RUT valido con cero a la izquierda preservado en limpieza"
+    },
+    {
+      "input": "12.345.678-0",
+      "expected_clean": "123456780",
+      "expected_body": "12345678",
+      "expected_dv": "5",
+      "is_valid": false,
+      "description": "RUT invalido con digito verificador numerico incorrecto (esperaba 5)"
+    },
+    {
+      "input": "18.123.458-1",
+      "expected_clean": "181234581",
+      "expected_body": "18123458",
+      "expected_dv": "K",
+      "is_valid": false,
+      "description": "RUT invalido con DV numerico cuando correspondia K"
+    },
+    {
+      "input": "18.123.458-9",
+      "expected_clean": "181234589",
+      "expected_body": "18123458",
+      "expected_dv": "K",
+      "is_valid": false,
+      "description": "RUT invalido con DV incorrecto"
+    },
+    {
+      "input": "18.12A.458-K",
+      "expected_clean": "1812A458K",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por contener letra intercalada en el cuerpo"
+    },
+    {
+      "input": "12.345.678-L",
+      "expected_clean": "12345678L",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por contener letra no valida como DV (L)"
+    },
+    {
+      "input": "12.345.678-Z",
+      "expected_clean": "12345678Z",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por letra Z como DV"
+    },
+    {
+      "input": "12-345-678-5",
+      "expected_clean": "123456785",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por multiples guiones mal ubicados"
+    },
+    {
+      "input": "12..345..678-5",
+      "expected_clean": "123456785",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por puntos consecutivos malformados"
+    },
+    {
+      "input": "12.345.678@5",
+      "expected_clean": "12345678@5",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por caracter especial no permitido (@)"
+    },
+    {
+      "input": "12345678--5",
+      "expected_clean": "123456785",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por doble guion"
+    },
+    {
+      "input": "",
+      "expected_clean": "",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por cadena vacia"
+    },
+    {
+      "input": "   ",
+      "expected_clean": "",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por solo espacios en blanco"
+    },
+    {
+      "input": "1",
+      "expected_clean": "1",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por longitud insuficiente (1 caracter)"
+    },
+    {
+      "input": "K",
+      "expected_clean": "K",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por solo tener DV K sin cuerpo"
+    },
+    {
+      "input": "-K",
+      "expected_clean": "K",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido con guion y DV pero sin cuerpo"
+    },
+    {
+      "input": "0-0",
+      "expected_clean": "00",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por cuerpo cero absoluto"
+    },
+    {
+      "input": "0-K",
+      "expected_clean": "0K",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por cuerpo cero con DV K"
+    },
+    {
+      "input": "abcdefgh-k",
+      "expected_clean": "abcdefghK",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido compuesto exclusivamente por letras"
+    },
+    {
+      "input": "1.2.3.4.5-K",
+      "expected_clean": "12345K",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por exceso de puntos separadores (mas de 2 puntos)"
+    }
+  ]
+}

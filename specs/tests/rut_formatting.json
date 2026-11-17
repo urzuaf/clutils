@@ -1,0 +1,69 @@
+{
+  "description": "Vectores de prueba canonicos compartidos para formateo de RUT chileno",
+  "cases": [
+    {
+      "input": "18123458K",
+      "expected_default": "18.123.458-K",
+      "expected_no_dots": "18123458-K",
+      "expected_no_hyphen": "18.123.458K",
+      "expected_plain": "18123458K",
+      "description": "RUT estandar de 8 digitos formateado"
+    },
+    {
+      "input": "51234561",
+      "expected_default": "5.123.456-1",
+      "expected_no_dots": "5123456-1",
+      "expected_no_hyphen": "5.123.4561",
+      "expected_plain": "51234561",
+      "description": "RUT antiguo de 7 digitos formateado"
+    },
+    {
+      "input": "40K",
+      "expected_default": "40-K",
+      "expected_no_dots": "40-K",
+      "expected_no_hyphen": "40K",
+      "expected_plain": "40K",
+      "description": "RUT corto de 2 digitos de cuerpo formateado"
+    },
+    {
+      "input": "19",
+      "expected_default": "1-9",
+      "expected_no_dots": "1-9",
+      "expected_no_hyphen": "19",
+      "expected_plain": "19",
+      "description": "RUT minimo de 1 digito de cuerpo formateado"
+    },
+    {
+      "input": "  18.123.458-k  ",
+      "expected_default": "18.123.458-K",
+      "expected_no_dots": "18123458-K",
+      "expected_no_hyphen": "18.123.458K",
+      "expected_plain": "18123458K",
+      "description": "RUT con espacios y k minuscula normalizado y formateado"
+    },
+    {
+      "input": "091234564",
+      "expected_default": "09.123.456-4",
+      "expected_no_dots": "09123456-4",
+      "expected_no_hyphen": "09.123.4564",
+      "expected_plain": "091234564",
+      "description": "RUT con cero a la izquierda preservado en formateo"
+    },
+    {
+      "input": "1",
+      "expected_default": "1",
+      "expected_no_dots": "1",
+      "expected_no_hyphen": "1",
+      "expected_plain": "1",
+      "description": "Cadena de longitud insuficiente no es alterada"
+    },
+    {
+      "input": "",
+      "expected_default": "",
+      "expected_no_dots": "",
+      "expected_no_hyphen": "",
+      "expected_plain": "",
+      "description": "Cadena vacia retorna vacio"
+    }
+  ]
+}
