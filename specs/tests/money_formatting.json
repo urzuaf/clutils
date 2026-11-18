@@ -192,6 +192,18 @@
       "expected": 0,
       "valid": false,
       "description": "Digito posterior a parentesis de cierre"
+    },
+    {
+      "input": "1-00",
+      "expected": 0,
+      "valid": false,
+      "description": "Signo menos en medio de digitos"
+    },
+    {
+      "input": "100-",
+      "expected": 0,
+      "valid": false,
+      "description": "Signo menos posterior a los digitos"
     }
   ],
   "uf_formatting": [
@@ -367,6 +379,22 @@
       "expected_iva": 191,
       "expected_bruto": 1196,
       "description": "Bruto 1.196 desglosado a Neto 1.005 e IVA 191"
+    },
+    {
+      "input_amount": -50,
+      "is_bruto": false,
+      "expected_neto": -50,
+      "expected_iva": -10,
+      "expected_bruto": -60,
+      "description": "Neto negativo con tie-break de redondeo a -10 (-50 * 0.19 = -9.5)"
+    },
+    {
+      "input_amount": -60,
+      "is_bruto": true,
+      "expected_neto": -50,
+      "expected_iva": -10,
+      "expected_bruto": -60,
+      "description": "Bruto negativo -60 desglosado simetricamente a Neto -50 e IVA -10"
     }
   ],
   "to_words": [
@@ -555,6 +583,24 @@
       "expected": "menos quinientos pesos",
       "expected_no_currency": "menos quinientos",
       "description": "Monto negativo en palabras"
+    },
+    {
+      "amount": 1000000000000000,
+      "expected": "mil billones de pesos",
+      "expected_no_currency": "mil billones",
+      "description": "Mil billones cerrado con 'de pesos'"
+    },
+    {
+      "amount": 1500000000000000,
+      "expected": "mil quinientos billones de pesos",
+      "expected_no_currency": "mil quinientos billones",
+      "description": "Mil quinientos billones cerrado con 'de pesos'"
+    },
+    {
+      "amount": 2000000000000000,
+      "expected": "dos mil billones de pesos",
+      "expected_no_currency": "dos mil billones",
+      "description": "Dos mil billones cerrado con 'de pesos'"
     }
   ]
 }

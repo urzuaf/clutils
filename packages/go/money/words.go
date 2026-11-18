@@ -67,8 +67,11 @@ func numberToWords(val uint64) string {
 		return "un"
 	}
 
-	billones := val / 1_000_000_000_000
-	remBillones := val % 1_000_000_000_000
+	trillones := val / 1_000_000_000_000_000_000
+	remTrillones := val % 1_000_000_000_000_000_000
+
+	billonesTotal := remTrillones / 1_000_000_000_000
+	remBillones := remTrillones % 1_000_000_000_000
 
 	millonesTotal := remBillones / 1_000_000
 	remMillones := remBillones % 1_000_000
@@ -78,16 +81,39 @@ func numberToWords(val uint64) string {
 
 	var parts []string
 
-	// 1. Billones (10^12)
-	if billones > 0 {
-		if billones == 1 {
-			parts = append(parts, "un billón")
+	// 1. Trillones (10^18)
+	if trillones > 0 {
+		if trillones == 1 {
+			parts = append(parts, "un trillón")
 		} else {
-			parts = append(parts, convertGroup(int(billones)), "billones")
+			parts = append(parts, convertGroup(int(trillones)), "trillones")
 		}
 	}
 
-	// 2. Millones (hasta 999.999 millones)
+	// 2. Billones (10^12)
+	if billonesTotal > 0 {
+		if billonesTotal == 1 {
+			parts = append(parts, "un billón")
+		} else {
+			milesDeBillones := billonesTotal / 1_000
+			restoBillones := billonesTotal % 1_000
+
+			var billParts []string
+			if milesDeBillones > 0 {
+				if milesDeBillones == 1 {
+					billParts = append(billParts, "mil")
+				} else {
+					billParts = append(billParts, convertGroup(int(milesDeBillones)), "mil")
+				}
+			}
+			if restoBillones > 0 {
+				billParts = append(billParts, convertGroup(int(restoBillones)))
+			}
+			parts = append(parts, strings.Join(billParts, " ")+" billones")
+		}
+	}
+
+	// 3. Millones (10^6)
 	if millonesTotal > 0 {
 		if millonesTotal == 1 {
 			parts = append(parts, "un millón")
@@ -110,7 +136,7 @@ func numberToWords(val uint64) string {
 		}
 	}
 
-	// 3. Miles
+	// 4. Miles (10^3)
 	if miles > 0 {
 		if miles == 1 {
 			parts = append(parts, "mil")
@@ -119,7 +145,7 @@ func numberToWords(val uint64) string {
 		}
 	}
 
-	// 4. Unidades
+	// 5. Unidades (10^0)
 	if unidades > 0 {
 		parts = append(parts, convertGroup(int(unidades)))
 	}

@@ -39,6 +39,13 @@ export interface IVAOptions {
  * calculateIVA(1000, true);  // { neto: 840, iva: 160, bruto: 1000 }
  * ```
  */
+/**
+ * Redondea un numero alejandose del cero (estandar contable simetrico / round half away from zero).
+ */
+function roundHalfAway(val: number): number {
+  return Math.sign(val) * Math.round(Math.abs(val));
+}
+
 export function calculateIVA(amount: number, isBruto: boolean, options?: IVAOptions): IVABreakdown {
   const rate = options?.rate !== undefined && options.rate > 0 ? options.rate : DEFAULT_IVA_RATE;
 
@@ -48,13 +55,13 @@ export function calculateIVA(amount: number, isBruto: boolean, options?: IVAOpti
 
   if (isBruto) {
     const bruto = amount;
-    const neto = Math.round(bruto / (1 + rate));
+    const neto = roundHalfAway(bruto / (1 + rate));
     const iva = bruto - neto;
     return { neto, iva, bruto };
   }
 
   const neto = amount;
-  const iva = Math.round(neto * rate);
+  const iva = roundHalfAway(neto * rate);
   const bruto = neto + iva;
   return { neto, iva, bruto };
 }

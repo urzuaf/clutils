@@ -64,8 +64,11 @@ function numberToWords(val: bigint): string {
   if (val === 0n) return 'cero';
   if (val === 1n) return 'un';
 
-  const billones = val / 1_000_000_000_000n;
-  const remBillones = val % 1_000_000_000_000n;
+  const trillones = val / 1_000_000_000_000_000_000n;
+  const remTrillones = val % 1_000_000_000_000_000_000n;
+
+  const billonesTotal = remTrillones / 1_000_000_000_000n;
+  const remBillones = remTrillones % 1_000_000_000_000n;
 
   const millonesTotal = remBillones / 1_000_000n;
   const remMillones = remBillones % 1_000_000n;
@@ -75,16 +78,39 @@ function numberToWords(val: bigint): string {
 
   const parts: string[] = [];
 
-  // 1. Billones (10^12)
-  if (billones > 0n) {
-    if (billones === 1n) {
-      parts.push('un billón');
+  // 1. Trillones (10^18)
+  if (trillones > 0n) {
+    if (trillones === 1n) {
+      parts.push('un trillón');
     } else {
-      parts.push(`${convertGroup(Number(billones))} billones`);
+      parts.push(`${convertGroup(Number(trillones))} trillones`);
     }
   }
 
-  // 2. Millones (hasta 999.999 millones)
+  // 2. Billones (10^12)
+  if (billonesTotal > 0n) {
+    if (billonesTotal === 1n) {
+      parts.push('un billón');
+    } else {
+      const milesDeBillones = billonesTotal / 1_000n;
+      const restoBillones = billonesTotal % 1_000n;
+
+      const billParts: string[] = [];
+      if (milesDeBillones > 0n) {
+        if (milesDeBillones === 1n) {
+          billParts.push('mil');
+        } else {
+          billParts.push(convertGroup(Number(milesDeBillones)), 'mil');
+        }
+      }
+      if (restoBillones > 0n) {
+        billParts.push(convertGroup(Number(restoBillones)));
+      }
+      parts.push(`${billParts.join(' ')} billones`);
+    }
+  }
+
+  // 3. Millones (10^6)
   if (millonesTotal > 0n) {
     if (millonesTotal === 1n) {
       parts.push('un millón');
@@ -107,7 +133,7 @@ function numberToWords(val: bigint): string {
     }
   }
 
-  // 3. Miles
+  // 4. Miles (10^3)
   if (miles > 0n) {
     if (miles === 1n) {
       parts.push('mil');
@@ -116,7 +142,7 @@ function numberToWords(val: bigint): string {
     }
   }
 
-  // 4. Unidades
+  // 5. Unidades (10^0)
   if (unidades > 0n) {
     parts.push(convertGroup(Number(unidades)));
   }

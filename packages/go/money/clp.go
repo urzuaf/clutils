@@ -164,6 +164,9 @@ func ParseCLP(amount string) (int64, error) {
 			// Simbolo o espacio valido
 			continue
 		case ch == '-':
+			if len(digits) > 0 {
+				return 0, fmt.Errorf("signo menos no puede ir después de dígitos")
+			}
 			minusCount++
 			isNegative = true
 		case ch == '(':

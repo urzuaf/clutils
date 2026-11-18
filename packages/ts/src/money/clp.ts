@@ -134,6 +134,9 @@ export function parseCLP(text: string): number {
     } else if (ch === '$' || ch === ' ' || ch === '\t') {
       continue;
     } else if (ch === '-') {
+      if (digits.length > 0) {
+        throw new Error('Signo menos no puede ir después de dígitos');
+      }
       minusCount++;
       isNegative = true;
     } else if (ch === '(') {
