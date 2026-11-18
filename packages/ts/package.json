@@ -35,6 +35,11 @@
       "types": "./dist/rut/index.d.ts",
       "import": "./dist/rut/index.js",
       "require": "./dist/rut/index.cjs"
+    },
+    "./money": {
+      "types": "./dist/money/index.d.ts",
+      "import": "./dist/money/index.js",
+      "require": "./dist/money/index.cjs"
     }
   },
   "files": [
