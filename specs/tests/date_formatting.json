@@ -1,0 +1,224 @@
+{
+  "description": "Vectores de prueba canonicos compartidos para operaciones de fecha y hora chilenas (parseo DD/MM/YYYY, formatos locales, fin de semana, zonas horarias)",
+  "parse_date": [
+    {
+      "input": "18/09/2026",
+      "expected_year": 2026,
+      "expected_month": 9,
+      "expected_day": 18,
+      "valid": true,
+      "description": "Fecha chilena estandar con barras"
+    },
+    {
+      "input": "18-09-2026",
+      "expected_year": 2026,
+      "expected_month": 9,
+      "expected_day": 18,
+      "valid": true,
+      "description": "Fecha chilena estandar con guiones"
+    },
+    {
+      "input": "05/01/2026",
+      "expected_year": 2026,
+      "expected_month": 1,
+      "expected_day": 5,
+      "valid": true,
+      "description": "Dia 5 de Enero (no debe invertirse a 1 de Mayo estilo EE.UU.)"
+    },
+    {
+      "input": "5/1/2026",
+      "expected_year": 2026,
+      "expected_month": 1,
+      "expected_day": 5,
+      "valid": true,
+      "description": "Fecha con dia y mes de un solo digito"
+    },
+    {
+      "input": "31/12/2025",
+      "expected_year": 2025,
+      "expected_month": 12,
+      "expected_day": 31,
+      "valid": true,
+      "description": "Fin de ano 31 de Diciembre"
+    },
+    {
+      "input": "29/02/2024",
+      "expected_year": 2024,
+      "expected_month": 2,
+      "expected_day": 29,
+      "valid": true,
+      "description": "Ano bisiesto valido 29 de Febrero 2024"
+    },
+    {
+      "input": "   18/09/2026   ",
+      "expected_year": 2026,
+      "expected_month": 9,
+      "expected_day": 18,
+      "valid": true,
+      "description": "Fecha con espacios en blanco al inicio y final"
+    },
+    {
+      "input": "29/02/2023",
+      "expected_year": 0,
+      "expected_month": 0,
+      "expected_day": 0,
+      "valid": false,
+      "description": "Ano no bisiesto con 29 de Febrero (invalido)"
+    },
+    {
+      "input": "31/04/2026",
+      "expected_year": 0,
+      "expected_month": 0,
+      "expected_day": 0,
+      "valid": false,
+      "description": "Abril solo tiene 30 dias (invalido)"
+    },
+    {
+      "input": "15/13/2026",
+      "expected_year": 0,
+      "expected_month": 0,
+      "expected_day": 0,
+      "valid": false,
+      "description": "Mes 13 fuera de rango (invalido)"
+    },
+    {
+      "input": "00/05/2026",
+      "expected_year": 0,
+      "expected_month": 0,
+      "expected_day": 0,
+      "valid": false,
+      "description": "Dia cero (invalido)"
+    },
+    {
+      "input": "32/01/2026",
+      "expected_year": 0,
+      "expected_month": 0,
+      "expected_day": 0,
+      "valid": false,
+      "description": "Dia 32 fuera de rango (invalido)"
+    },
+    {
+      "input": "2026/09/18",
+      "expected_year": 0,
+      "expected_month": 0,
+      "expected_day": 0,
+      "valid": false,
+      "description": "Formato ISO no permitido en parseDate chileno"
+    },
+    {
+      "input": "abc",
+      "expected_year": 0,
+      "expected_month": 0,
+      "expected_day": 0,
+      "valid": false,
+      "description": "Texto alfabetico sin fecha"
+    },
+    {
+      "input": "",
+      "expected_year": 0,
+      "expected_month": 0,
+      "expected_day": 0,
+      "valid": false,
+      "description": "Texto vacio"
+    }
+  ],
+  "format_date": [
+    {
+      "year": 2026,
+      "month": 9,
+      "day": 18,
+      "expected_numeric": "18/09/2026",
+      "expected_numeric_hyphen": "18-09-2026",
+      "expected_formal": "18 de septiembre de 2026",
+      "expected_full": "Viernes, 18 de septiembre de 2026",
+      "description": "Fiestas Patrias 18 de Septiembre 2026"
+    },
+    {
+      "year": 2026,
+      "month": 1,
+      "day": 5,
+      "expected_numeric": "05/01/2026",
+      "expected_numeric_hyphen": "05-01-2026",
+      "expected_formal": "5 de enero de 2026",
+      "expected_full": "Lunes, 5 de enero de 2026",
+      "description": "Dia con un solo digito 5 de Enero 2026"
+    },
+    {
+      "year": 2026,
+      "month": 11,
+      "day": 1,
+      "expected_numeric": "01/11/2026",
+      "expected_numeric_hyphen": "01-11-2026",
+      "expected_formal": "1 de noviembre de 2026",
+      "expected_full": "Domingo, 1 de noviembre de 2026",
+      "description": "Primer dia de mes 1 de Noviembre 2026"
+    }
+  ],
+  "is_weekend": [
+    {
+      "year": 2026,
+      "month": 9,
+      "day": 18,
+      "expected": false,
+      "description": "Viernes 18 de septiembre no es fin de semana"
+    },
+    {
+      "year": 2026,
+      "month": 9,
+      "day": 19,
+      "expected": true,
+      "description": "Sabado 19 de septiembre es fin de semana"
+    },
+    {
+      "year": 2026,
+      "month": 9,
+      "day": 20,
+      "expected": true,
+      "description": "Domingo 20 de septiembre es fin de semana"
+    },
+    {
+      "year": 2026,
+      "month": 9,
+      "day": 21,
+      "expected": false,
+      "description": "Lunes 21 de septiembre no es fin de semana"
+    }
+  ],
+  "timezones": [
+    {
+      "identifier": "santiago",
+      "expected_iana": "America/Santiago",
+      "utc_timestamp": "2026-07-15T15:00:00Z",
+      "expected_hour": 11,
+      "description": "Santiago en invierno (UTC-4)"
+    },
+    {
+      "identifier": "santiago",
+      "expected_iana": "America/Santiago",
+      "utc_timestamp": "2026-01-15T15:00:00Z",
+      "expected_hour": 12,
+      "description": "Santiago en verano (UTC-3)"
+    },
+    {
+      "identifier": "punta_arenas",
+      "expected_iana": "America/Punta_Arenas",
+      "utc_timestamp": "2026-07-15T15:00:00Z",
+      "expected_hour": 12,
+      "description": "Punta Arenas en invierno mantiene UTC-3"
+    },
+    {
+      "identifier": "easter_island",
+      "expected_iana": "Pacific/Easter",
+      "utc_timestamp": "2026-07-15T15:00:00Z",
+      "expected_hour": 9,
+      "description": "Rapa Nui en invierno (UTC-6)"
+    },
+    {
+      "identifier": "easter_island",
+      "expected_iana": "Pacific/Easter",
+      "utc_timestamp": "2026-01-15T15:00:00Z",
+      "expected_hour": 10,
+      "description": "Rapa Nui en verano (UTC-5)"
+    }
+  ]
+}
