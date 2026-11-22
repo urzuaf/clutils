@@ -1,0 +1,295 @@
+{
+  "description": "Vectores de prueba canonicos compartidos para telecomunicaciones y telefonos de Chile (normalizacion E.164, formateo visual, validacion y clasificacion de lineas)",
+  "normalization": [
+    {
+      "input": "+56 9 1234 5678",
+      "expected_e164": "+56912345678",
+      "valid": true,
+      "description": "Movil con formato internacional completo y espacios"
+    },
+    {
+      "input": "912345678",
+      "expected_e164": "+56912345678",
+      "valid": true,
+      "description": "Movil plano estandar de 9 digitos"
+    },
+    {
+      "input": "56912345678",
+      "expected_e164": "+56912345678",
+      "valid": true,
+      "description": "Movil con codigo de pais 56 sin signo +"
+    },
+    {
+      "input": "09 1234 5678",
+      "expected_e164": "+56912345678",
+      "valid": true,
+      "description": "Movil con cero inicial legacy descartado"
+    },
+    {
+      "input": "0912345678",
+      "expected_e164": "+56912345678",
+      "valid": true,
+      "description": "Movil continuo con cero inicial legacy"
+    },
+    {
+      "input": "1234 5678",
+      "expected_e164": "+56912345678",
+      "valid": true,
+      "description": "Numero movil de 8 digitos sin prefijo 9 (asume movil nacional)"
+    },
+    {
+      "input": "9-1234-5678",
+      "expected_e164": "+56912345678",
+      "valid": true,
+      "description": "Movil con guiones"
+    },
+    {
+      "input": "2 2123 4567",
+      "expected_e164": "+56221234567",
+      "valid": true,
+      "description": "Red fija Santiago (codigo de area 2)"
+    },
+    {
+      "input": "02 2123 4567",
+      "expected_e164": "+56221234567",
+      "valid": true,
+      "description": "Red fija Santiago con cero legacy 02"
+    },
+    {
+      "input": "+56 2 2123 4567",
+      "expected_e164": "+56221234567",
+      "valid": true,
+      "description": "Red fija Santiago en formato internacional"
+    },
+    {
+      "input": "32 212 3456",
+      "expected_e164": "+56322123456",
+      "valid": true,
+      "description": "Red fija Valparaiso (codigo de area 32)"
+    },
+    {
+      "input": "+56 41 212 3456",
+      "expected_e164": "+56412123456",
+      "valid": true,
+      "description": "Red fija Concepcion (codigo de area 41)"
+    },
+    {
+      "input": "72 212 3456",
+      "expected_e164": "+56722123456",
+      "valid": true,
+      "description": "Red fija Rancagua O'Higgins (codigo de area 72)"
+    },
+    {
+      "input": "+56 71 212 3456",
+      "expected_e164": "+56712123456",
+      "valid": true,
+      "description": "Red fija Talca Maule (codigo de area 71)"
+    },
+    {
+      "input": "73 212 3456",
+      "expected_e164": "+56732123456",
+      "valid": true,
+      "description": "Red fija Linares Maule (codigo de area 73)"
+    },
+    {
+      "input": "75 212 3456",
+      "expected_e164": "+56752123456",
+      "valid": true,
+      "description": "Red fija Curico Maule (codigo de area 75)"
+    },
+    {
+      "input": "+56 44 123 4567",
+      "expected_e164": "+56441234567",
+      "valid": true,
+      "description": "Telefonia IP VoIP (codigo 44)"
+    },
+    {
+      "input": "800 123 456",
+      "expected_e164": "+56800123456",
+      "valid": true,
+      "description": "Linea gratuita 800"
+    },
+    {
+      "input": "+56 600 600 1234",
+      "expected_e164": "+566006001234",
+      "valid": true,
+      "description": "Linea de costo compartido 600"
+    },
+    {
+      "input": "   +56 9 8765 4321   ",
+      "expected_e164": "+56987654321",
+      "valid": true,
+      "description": "Movil con espacios en blanco a los extremos"
+    },
+    {
+      "input": "12345",
+      "expected_e164": "",
+      "valid": false,
+      "description": "Numero con longitud insuficiente"
+    },
+    {
+      "input": "91234567890",
+      "expected_e164": "",
+      "valid": false,
+      "description": "Numero con exceso de digitos"
+    },
+    {
+      "input": "112345678",
+      "expected_e164": "",
+      "valid": false,
+      "description": "Numero de 9 digitos con prefijo invalido 1"
+    },
+    {
+      "input": "abc",
+      "expected_e164": "",
+      "valid": false,
+      "description": "Texto alfabetico sin digitos"
+    },
+    {
+      "input": "",
+      "expected_e164": "",
+      "valid": false,
+      "description": "Cadena vacia"
+    }
+  ],
+  "formatting": [
+    {
+      "input": "912345678",
+      "expected_international": "+56 9 1234 5678",
+      "expected_national": "9 1234 5678",
+      "expected_e164": "+56912345678",
+      "description": "Formato de numero movil"
+    },
+    {
+      "input": "+56912345678",
+      "expected_international": "+56 9 1234 5678",
+      "expected_national": "9 1234 5678",
+      "expected_e164": "+56912345678",
+      "description": "Formato de numero movil partiendo de E.164"
+    },
+    {
+      "input": "221234567",
+      "expected_international": "+56 2 2123 4567",
+      "expected_national": "2 2123 4567",
+      "expected_e164": "+56221234567",
+      "description": "Formato de red fija Santiago (area de 1 digito)"
+    },
+    {
+      "input": "322123456",
+      "expected_international": "+56 32 212 3456",
+      "expected_national": "32 212 3456",
+      "expected_e164": "+56322123456",
+      "description": "Formato de red fija Valparaiso (area de 2 digitos)"
+    },
+    {
+      "input": "800123456",
+      "expected_international": "+56 800 123 456",
+      "expected_national": "800 123 456",
+      "expected_e164": "+56800123456",
+      "description": "Formato de linea 800"
+    },
+    {
+      "input": "6006001234",
+      "expected_international": "+56 600 600 1234",
+      "expected_national": "600 600 1234",
+      "expected_e164": "+566006001234",
+      "description": "Formato de linea 600"
+    },
+    {
+      "input": "722123456",
+      "expected_international": "+56 72 212 3456",
+      "expected_national": "72 212 3456",
+      "expected_e164": "+56722123456",
+      "description": "Formato de red fija Rancagua O'Higgins"
+    },
+    {
+      "input": "441234567",
+      "expected_international": "+56 44 123 4567",
+      "expected_national": "44 123 4567",
+      "expected_e164": "+56441234567",
+      "description": "Formato de telefonia IP VoIP"
+    }
+  ],
+  "phone_types": [
+    {
+      "input": "+56 9 1234 5678",
+      "expected_type": "mobile",
+      "description": "Telefono celular movil"
+    },
+    {
+      "input": "221234567",
+      "expected_type": "landline",
+      "description": "Red fija Santiago"
+    },
+    {
+      "input": "+56 32 212 3456",
+      "expected_type": "landline",
+      "description": "Red fija Valparaiso"
+    },
+    {
+      "input": "+56 41 212 3456",
+      "expected_type": "landline",
+      "description": "Red fija Concepcion"
+    },
+    {
+      "input": "800 123 456",
+      "expected_type": "toll_free",
+      "description": "Linea 800 cobro revertido"
+    },
+    {
+      "input": "600 600 1234",
+      "expected_type": "shared_cost",
+      "description": "Linea 600 costo compartido"
+    },
+    {
+      "input": "131",
+      "expected_type": "emergency",
+      "description": "Emergencia SAMU ambulancia"
+    },
+    {
+      "input": "132",
+      "expected_type": "emergency",
+      "description": "Emergencia Bomberos"
+    },
+    {
+      "input": "133",
+      "expected_type": "emergency",
+      "description": "Emergencia Carabineros"
+    },
+    {
+      "input": "134",
+      "expected_type": "emergency",
+      "description": "Emergencia PDI investigaciones"
+    },
+    {
+      "input": "149",
+      "expected_type": "emergency",
+      "description": "Emergencia Fono Familia"
+    },
+    {
+      "input": "136",
+      "expected_type": "emergency",
+      "description": "Emergencia Socorro Andino"
+    },
+    {
+      "input": "+56 72 212 3456",
+      "expected_type": "landline",
+      "description": "Red fija O'Higgins"
+    },
+    {
+      "input": "+56 44 123 4567",
+      "expected_type": "voip",
+      "description": "Telefonia IP VoIP"
+    },
+    {
+      "input": "123",
+      "expected_type": "unknown",
+      "description": "Numero de 3 digitos no catalogado como emergencia"
+    },
+    {
+      "input": "91234",
+      "expected_type": "unknown",
+      "description": "Numero incompleto no valido"
+    }
+  ]
+}
