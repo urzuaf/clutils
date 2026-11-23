@@ -1,0 +1,312 @@
+{
+  "description": "Vectores de prueba canónicos compartidos para División Político-Administrativa (DPA) oficial de Chile (16 regiones, 56 provincias, 346 comunas según SUBDERE e INE)",
+  "source": "data/geo/dpa.json",
+  "counts": {
+    "expected_regions": 16,
+    "expected_provinces": 56,
+    "expected_communes": 346,
+    "region_commune_counts": [
+      { "region_code": "15", "iso_code": "CL-AP", "name": "Arica y Parinacota", "expected_communes": 4, "expected_provinces": 2 },
+      { "region_code": "01", "iso_code": "CL-TA", "name": "Tarapacá", "expected_communes": 7, "expected_provinces": 2 },
+      { "region_code": "02", "iso_code": "CL-AN", "name": "Antofagasta", "expected_communes": 9, "expected_provinces": 3 },
+      { "region_code": "03", "iso_code": "CL-AT", "name": "Atacama", "expected_communes": 9, "expected_provinces": 3 },
+      { "region_code": "04", "iso_code": "CL-CO", "name": "Coquimbo", "expected_communes": 15, "expected_provinces": 3 },
+      { "region_code": "05", "iso_code": "CL-VS", "name": "Valparaíso", "expected_communes": 38, "expected_provinces": 8 },
+      { "region_code": "13", "iso_code": "CL-RM", "name": "Metropolitana de Santiago", "expected_communes": 52, "expected_provinces": 6 },
+      { "region_code": "06", "iso_code": "CL-LI", "name": "Libertador General Bernardo O'Higgins", "expected_communes": 33, "expected_provinces": 3 },
+      { "region_code": "07", "iso_code": "CL-ML", "name": "Maule", "expected_communes": 30, "expected_provinces": 4 },
+      { "region_code": "16", "iso_code": "CL-NB", "name": "Ñuble", "expected_communes": 21, "expected_provinces": 3 },
+      { "region_code": "08", "iso_code": "CL-BI", "name": "Biobío", "expected_communes": 33, "expected_provinces": 3 },
+      { "region_code": "09", "iso_code": "CL-AR", "name": "La Araucanía", "expected_communes": 32, "expected_provinces": 2 },
+      { "region_code": "14", "iso_code": "CL-LR", "name": "Los Ríos", "expected_communes": 12, "expected_provinces": 2 },
+      { "region_code": "10", "iso_code": "CL-LL", "name": "Los Lagos", "expected_communes": 30, "expected_provinces": 4 },
+      { "region_code": "11", "iso_code": "CL-AI", "name": "Aysén del General Carlos Ibáñez del Campo", "expected_communes": 10, "expected_provinces": 4 },
+      { "region_code": "12", "iso_code": "CL-MA", "name": "Magallanes y de la Antártica Chilena", "expected_communes": 11, "expected_provinces": 4 }
+    ]
+  },
+  "filtering": [
+    {
+      "description": "Comunas de la Región de Ñuble (Región 16 / CL-NB)",
+      "region_query": "16",
+      "expected_count": 21,
+      "sample_commune_cuts": ["16101", "16102", "16301", "16201"]
+    },
+    {
+      "description": "Comunas de la Región de Ñuble usando código ISO",
+      "region_query": "CL-NB",
+      "expected_count": 21,
+      "sample_commune_cuts": ["16101"]
+    },
+    {
+      "description": "Comunas de la Región Metropolitana (Región 13 / CL-RM)",
+      "region_query": "13",
+      "expected_count": 52,
+      "sample_commune_cuts": ["13101", "13120", "13123"]
+    },
+    {
+      "description": "Comunas de la Región Metropolitana usando código ISO",
+      "region_query": "CL-RM",
+      "expected_count": 52,
+      "sample_commune_cuts": ["13101"]
+    },
+    {
+      "description": "Región inexistente debe retornar lista vacía",
+      "region_query": "99",
+      "expected_count": 0,
+      "sample_commune_cuts": []
+    },
+    {
+      "description": "Provincias de la Región de Ñuble",
+      "provinces_region_query": "16",
+      "expected_provinces_count": 3,
+      "expected_province_names": ["Diguillín", "Itata", "Punilla"]
+    },
+    {
+      "description": "Provincias de la Región Metropolitana",
+      "provinces_region_query": "13",
+      "expected_provinces_count": 6,
+      "expected_province_names": ["Chacabuco", "Cordillera", "Maipo", "Melipilla", "Santiago", "Talagante"]
+    }
+  ],
+  "find_comuna": [
+    {
+      "query": "13120",
+      "expected_cut": "13120",
+      "expected_name": "Ñuñoa",
+      "expected_region_code": "13",
+      "description": "Búsqueda por código CUT exacto Ñuñoa"
+    },
+    {
+      "query": "16101",
+      "expected_cut": "16101",
+      "expected_name": "Chillán",
+      "expected_region_code": "16",
+      "description": "Búsqueda por código CUT exacto Chillán (Ñuble)"
+    },
+    {
+      "query": "05109",
+      "expected_cut": "05109",
+      "expected_name": "Viña del Mar",
+      "expected_region_code": "05",
+      "description": "Búsqueda por código CUT exacto Viña del Mar"
+    },
+    {
+      "query": "Providencia",
+      "expected_cut": "13123",
+      "expected_name": "Providencia",
+      "expected_region_code": "13",
+      "description": "Búsqueda por nombre exacto con mayúscula"
+    },
+    {
+      "query": "nunoa",
+      "expected_cut": "13120",
+      "expected_name": "Ñuñoa",
+      "expected_region_code": "13",
+      "description": "Búsqueda sin tilde ni eñe minúscula"
+    },
+    {
+      "query": "NUNOA",
+      "expected_cut": "13120",
+      "expected_name": "Ñuñoa",
+      "expected_region_code": "13",
+      "description": "Búsqueda sin tilde ni eñe mayúscula"
+    },
+    {
+      "query": "vina del mar",
+      "expected_cut": "05109",
+      "expected_name": "Viña del Mar",
+      "expected_region_code": "05",
+      "description": "Búsqueda sin tilde ni eñe con espacios múltiples"
+    },
+    {
+      "query": "aysen",
+      "expected_cut": "11201",
+      "expected_name": "Aysén",
+      "expected_region_code": "11",
+      "description": "Búsqueda de Aysén sin tilde"
+    },
+    {
+      "query": "concepcion",
+      "expected_cut": "08101",
+      "expected_name": "Concepción",
+      "expected_region_code": "08",
+      "description": "Búsqueda de Concepción sin tilde"
+    },
+    {
+      "query": "chepica",
+      "expected_cut": "06302",
+      "expected_name": "Chépica",
+      "expected_region_code": "06",
+      "description": "Búsqueda de Chépica sin tilde"
+    },
+    {
+      "query": "machali",
+      "expected_cut": "06108",
+      "expected_name": "Machalí",
+      "expected_region_code": "06",
+      "description": "Búsqueda de Machalí sin tilde"
+    },
+    {
+      "query": "cabo de hornos",
+      "expected_cut": "12201",
+      "expected_name": "Cabo de Hornos",
+      "expected_region_code": "12",
+      "description": "Búsqueda de Cabo de Hornos"
+    },
+    {
+      "query": "  ñuñoa  ",
+      "expected_cut": "13120",
+      "expected_name": "Ñuñoa",
+      "expected_region_code": "13",
+      "description": "Búsqueda con espacios en blanco en extremos"
+    },
+    {
+      "query": "ciudad gotica",
+      "expected_cut": null,
+      "expected_name": null,
+      "expected_region_code": null,
+      "description": "Comuna inexistente retorna null"
+    },
+    {
+      "query": "",
+      "expected_cut": null,
+      "expected_name": null,
+      "expected_region_code": null,
+      "description": "Consulta vacía retorna null"
+    }
+  ],
+  "find_region": [
+    {
+      "query": "13",
+      "expected_code": "13",
+      "expected_iso": "CL-RM",
+      "expected_name": "Metropolitana de Santiago",
+      "description": "Búsqueda por código INE '13'"
+    },
+    {
+      "query": "16",
+      "expected_code": "16",
+      "expected_iso": "CL-NB",
+      "expected_name": "Ñuble",
+      "description": "Búsqueda por código INE '16'"
+    },
+    {
+      "query": "CL-RM",
+      "expected_code": "13",
+      "expected_iso": "CL-RM",
+      "expected_name": "Metropolitana de Santiago",
+      "description": "Búsqueda por código ISO 'CL-RM'"
+    },
+    {
+      "query": "cl-nb",
+      "expected_code": "16",
+      "expected_iso": "CL-NB",
+      "expected_name": "Ñuble",
+      "description": "Búsqueda por código ISO en minúsculas 'cl-nb'"
+    },
+    {
+      "query": "metropolitana",
+      "expected_code": "13",
+      "expected_iso": "CL-RM",
+      "expected_name": "Metropolitana de Santiago",
+      "description": "Búsqueda por nombre 'metropolitana'"
+    },
+    {
+      "query": "tarapaca",
+      "expected_code": "01",
+      "expected_iso": "CL-TA",
+      "expected_name": "Tarapacá",
+      "description": "Búsqueda por nombre sin tilde 'tarapaca'"
+    },
+    {
+      "query": "araucania",
+      "expected_code": "09",
+      "expected_iso": "CL-AR",
+      "expected_name": "La Araucanía",
+      "description": "Búsqueda por nombre sin tilde 'araucania'"
+    },
+    {
+      "query": "valparaiso",
+      "expected_code": "05",
+      "expected_iso": "CL-VS",
+      "expected_name": "Valparaíso",
+      "description": "Búsqueda por nombre sin tilde 'valparaiso'"
+    },
+    {
+      "query": "nuble",
+      "expected_code": "16",
+      "expected_iso": "CL-NB",
+      "expected_name": "Ñuble",
+      "description": "Búsqueda de Ñuble sin eñe 'nuble'"
+    },
+    {
+      "query": "atlantida",
+      "expected_code": null,
+      "expected_iso": null,
+      "expected_name": null,
+      "description": "Región inexistente retorna null"
+    }
+  ],
+  "get_region_by_comuna": [
+    {
+      "comuna_query": "Ñuñoa",
+      "expected_region_code": "13",
+      "expected_region_name": "Metropolitana de Santiago",
+      "description": "Resolver región para Ñuñoa con nombre exacto"
+    },
+    {
+      "comuna_query": "nunoa",
+      "expected_region_code": "13",
+      "expected_region_name": "Metropolitana de Santiago",
+      "description": "Resolver región para Ñuñoa sin tildes ni eñe"
+    },
+    {
+      "comuna_query": "13120",
+      "expected_region_code": "13",
+      "expected_region_name": "Metropolitana de Santiago",
+      "description": "Resolver región para Ñuñoa por código CUT"
+    },
+    {
+      "comuna_query": "Chillán",
+      "expected_region_code": "16",
+      "expected_region_name": "Ñuble",
+      "description": "Resolver región para Chillán nombre exacto"
+    },
+    {
+      "comuna_query": "chillan",
+      "expected_region_code": "16",
+      "expected_region_name": "Ñuble",
+      "description": "Resolver región para Chillán sin tilde"
+    },
+    {
+      "comuna_query": "16101",
+      "expected_region_code": "16",
+      "expected_region_name": "Ñuble",
+      "description": "Resolver región para Chillán por código CUT"
+    },
+    {
+      "comuna_query": "Concepción",
+      "expected_region_code": "08",
+      "expected_region_name": "Biobío",
+      "description": "Resolver región para Concepción nombre exacto"
+    },
+    {
+      "comuna_query": "concepcion",
+      "expected_region_code": "08",
+      "expected_region_name": "Biobío",
+      "description": "Resolver región para Concepción sin tilde"
+    },
+    {
+      "comuna_query": "Viña del Mar",
+      "expected_region_code": "05",
+      "expected_region_name": "Valparaíso",
+      "description": "Resolver región para Viña del Mar"
+    },
+    {
+      "comuna_query": "comuna_inexistente",
+      "expected_region_code": null,
+      "expected_region_name": null,
+      "description": "Comuna inexistente retorna null"
+    }
+  ]
+}

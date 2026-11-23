@@ -50,6 +50,11 @@
       "types": "./dist/telecom/index.d.ts",
       "import": "./dist/telecom/index.js",
       "require": "./dist/telecom/index.cjs"
+    },
+    "./geo": {
+      "types": "./dist/geo/index.d.ts",
+      "import": "./dist/geo/index.js",
+      "require": "./dist/geo/index.cjs"
     }
   },
   "files": [
