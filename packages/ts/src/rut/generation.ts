@@ -83,7 +83,7 @@ export function generatePerson(options?: FormatOptions): string {
 }
 
 /**
- * Genera un RUT aleatorio representativo de personas jurídicas y empresas en Chile (rango 60M a 90M).
+ * Genera un RUT aleatorio representativo de personas jurídicas y empresas en Chile (rango 70M a 80M).
  *
  * @param options - Opciones de formato visual.
  * @returns Cadena con el RUT de empresa generado.

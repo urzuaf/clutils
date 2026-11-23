@@ -92,4 +92,15 @@ describe('RUT Validation Suite (specs/tests/rut_validation.json)', () => {
       expect(validateDetailed('18.123.458-1')?.code).toBe(RutErrorCode.InvalidDv);
     });
   });
+
+  describe('QA Regresiones: calculateDv estricto', () => {
+    it('rechaza Infinity, NaN, decimales y strings con sufijos no numéricos', () => {
+      expect(calculateDv(Infinity)).toBe('');
+      expect(calculateDv(-Infinity)).toBe('');
+      expect(calculateDv(NaN)).toBe('');
+      expect(calculateDv(12345678.9)).toBe('');
+      expect(calculateDv('12345678abc')).toBe('');
+      expect(calculateDv('+12345678')).toBe('');
+    });
+  });
 });

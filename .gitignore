@@ -98,3 +98,6 @@ bin/
 obj/
 *.user
 *.suo
+
+## Internal documentation
+*_internal.md

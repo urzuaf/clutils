@@ -52,7 +52,7 @@ func GeneratePerson(opts ...FormatOptions) string {
 	return GenerateBetween(DefaultPersonMin, DefaultPersonMax, opts...)
 }
 
-// GenerateBusiness genera un RUT aleatorio representativo de personas jurídicas y empresas en Chile (rango 60M a 90M).
+// GenerateBusiness genera un RUT aleatorio representativo de personas jurídicas y empresas en Chile (rango 70M a 80M).
 //
 // Ejemplo:
 //

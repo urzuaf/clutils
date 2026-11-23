@@ -130,12 +130,49 @@ func ValidateDetailed(inputRut string) *ValidationError {
 		}
 	}
 
-	if _, after, ok := strings.Cut(inputRut, "-"); ok {
+	var bodyWithDots string
+	if before, after, ok := strings.Cut(trimmed, "-"); ok {
+		if strings.Contains(after, ".") {
+			return &ValidationError{
+				Code:    ErrCodeMalformedFormat,
+				Message: "no se permiten puntos después del guión del RUT",
+			}
+		}
 		afterHyphen := Clean(after)
 		if len(afterHyphen) != 1 {
 			return &ValidationError{
 				Code:    ErrCodeMalformedFormat,
 				Message: "el guión del RUT debe separar únicamente el dígito verificador",
+			}
+		}
+		bodyWithDots = stripWhitespace(before)
+	} else {
+		noSpace := stripWhitespace(trimmed)
+		if strings.Contains(noSpace, ".") {
+			if len(noSpace) < 2 || noSpace[len(noSpace)-1] == '.' {
+				return &ValidationError{
+					Code:    ErrCodeMalformedFormat,
+					Message: "ubicación inválida de puntos separadores en el RUT",
+				}
+			}
+			bodyWithDots = noSpace[:len(noSpace)-1]
+		}
+	}
+
+	if strings.Contains(bodyWithDots, ".") {
+		groups := strings.Split(bodyWithDots, ".")
+		if len(groups[0]) < 1 || len(groups[0]) > 3 {
+			return &ValidationError{
+				Code:    ErrCodeMalformedFormat,
+				Message: "ubicación inválida de puntos separadores en el RUT",
+			}
+		}
+		for i := 1; i < len(groups); i++ {
+			if len(groups[i]) != 3 {
+				return &ValidationError{
+					Code:    ErrCodeMalformedFormat,
+					Message: "ubicación inválida de puntos separadores en el RUT",
+				}
 			}
 		}
 	}
@@ -154,7 +191,16 @@ func ValidateDetailed(inputRut string) *ValidationError {
 	body := cleaned[:lastIndex]
 	dv := string(cleaned[lastIndex])
 
-	// 3. Control de cuerpo numérico
+	// 3. Control de cuerpo numérico (estrictamente dígitos ASCII '0'-'9', rechaza '+' o '-')
+	for i := 0; i < len(body); i++ {
+		if body[i] < '0' || body[i] > '9' {
+			return &ValidationError{
+				Code:    ErrCodeInvalidCharacters,
+				Message: "el cuerpo del RUT contiene caracteres no numéricos",
+			}
+		}
+	}
+
 	numBody, err := strconv.Atoi(body)
 	if err != nil {
 		return &ValidationError{
@@ -172,6 +218,18 @@ func ValidateDetailed(inputRut string) *ValidationError {
 	}
 
 	return nil
+}
+
+func stripWhitespace(s string) string {
+	var b strings.Builder
+	b.Grow(len(s))
+	for _, r := range s {
+		if r == ' ' || r == '\t' || r == '\n' || r == '\r' {
+			continue
+		}
+		b.WriteRune(r)
+	}
+	return b.String()
 }
 
 // Validate verifica si una cadena representa un RUT matemáticamente válido según la normativa chilena.

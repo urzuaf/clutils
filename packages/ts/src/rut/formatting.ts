@@ -109,6 +109,12 @@ export function split(inputRut: string): RutParts {
     body,
     dv,
     bodyInt(): number {
+      for (let i = 0; i < body.length; i++) {
+        const code = body.charCodeAt(i);
+        if (code < 48 || code > 57) {
+          throw new Error('el cuerpo del RUT contiene caracteres no numéricos');
+        }
+      }
       const parsed = parseInt(body, 10);
       if (isNaN(parsed)) {
         throw new Error('el cuerpo del RUT contiene caracteres no numéricos');
@@ -141,7 +147,7 @@ export function mask(inputRut: string, options?: MaskOptions): string {
   }
 
   const maskChar = options?.maskChar ?? '*';
-  const visibleCount = options?.visibleCount ?? 4;
+  const visibleCount = Math.max(options?.visibleCount ?? 4, 0);
   const formatted = options?.formatted ?? true;
 
   if (!formatted) {

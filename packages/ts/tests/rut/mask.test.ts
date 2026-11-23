@@ -42,4 +42,9 @@ describe('RUT Mask Suite (specs/tests/rut_mask.json)', () => {
   it('permite cantidad personalizada de caracteres visibles', () => {
     expect(mask('18123458K', { visibleCount: 2, formatted: true })).toBe('**.***.**8-K');
   });
+
+  it('acota visibleCount negativo a 0 sin exceder longitud del RUT', () => {
+    expect(mask('18123458K', { visibleCount: -5, formatted: false })).toBe('*********');
+    expect(mask('18123458K', { visibleCount: -5, formatted: true })).toBe('**.***.***-*');
+  });
 });

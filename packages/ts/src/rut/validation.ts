@@ -71,10 +71,44 @@ export function clean(inputRut: string): string {
  * calculateDv("12345678"); // "5"
  * ```
  */
+function stripWhitespace(s: string): string {
+  let out = '';
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r') {
+      continue;
+    }
+    out += ch;
+  }
+  return out;
+}
+
+function isStrictDigits(s: string): boolean {
+  if (s.length === 0) return false;
+  for (let i = 0; i < s.length; i++) {
+    const code = s.charCodeAt(i);
+    if (code < 48 || code > 57) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function calculateDv(body: number | string): string {
-  const num = typeof body === 'number' ? body : parseInt(body, 10);
-  if (isNaN(num) || num <= 0) {
-    return '';
+  let num: number;
+  if (typeof body === 'number') {
+    if (!Number.isSafeInteger(body) || body <= 0) {
+      return '';
+    }
+    num = body;
+  } else {
+    if (typeof body !== 'string' || !isStrictDigits(body)) {
+      return '';
+    }
+    num = parseInt(body, 10);
+    if (!Number.isSafeInteger(num) || num <= 0) {
+      return '';
+    }
   }
 
   let sum = 0;
@@ -142,14 +176,55 @@ export function validateDetailed(inputRut: string): ValidationError | null {
     };
   }
 
-  const hyphenIdx = inputRut.indexOf('-');
+  const trimmed = inputRut.trim();
+  const hyphenIdx = trimmed.indexOf('-');
+  let bodyWithDots = '';
+
   if (hyphenIdx !== -1) {
-    const afterHyphen = clean(inputRut.slice(hyphenIdx + 1));
+    const before = trimmed.slice(0, hyphenIdx);
+    const after = trimmed.slice(hyphenIdx + 1);
+    if (after.includes('.')) {
+      return {
+        code: RutErrorCode.MalformedFormat,
+        message: 'no se permiten puntos después del guión del RUT',
+      };
+    }
+    const afterHyphen = clean(after);
     if (afterHyphen.length !== 1) {
       return {
         code: RutErrorCode.MalformedFormat,
         message: 'el guión del RUT debe separar únicamente el dígito verificador',
       };
+    }
+    bodyWithDots = stripWhitespace(before);
+  } else {
+    const noSpace = stripWhitespace(trimmed);
+    if (noSpace.includes('.')) {
+      if (noSpace.length < 2 || noSpace[noSpace.length - 1] === '.') {
+        return {
+          code: RutErrorCode.MalformedFormat,
+          message: 'ubicación inválida de puntos separadores en el RUT',
+        };
+      }
+      bodyWithDots = noSpace.slice(0, -1);
+    }
+  }
+
+  if (bodyWithDots.includes('.')) {
+    const groups = bodyWithDots.split('.');
+    if (groups[0].length < 1 || groups[0].length > 3) {
+      return {
+        code: RutErrorCode.MalformedFormat,
+        message: 'ubicación inválida de puntos separadores en el RUT',
+      };
+    }
+    for (let i = 1; i < groups.length; i++) {
+      if (groups[i].length !== 3) {
+        return {
+          code: RutErrorCode.MalformedFormat,
+          message: 'ubicación inválida de puntos separadores en el RUT',
+        };
+      }
     }
   }
 

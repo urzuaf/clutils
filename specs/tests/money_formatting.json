@@ -1,0 +1,662 @@
+{
+  "description": "Vectores de prueba canonicos compartidos para operaciones monetarias chilenas (CLP, UF, UTM, IVA, toWords)",
+  "clp_formatting": [
+    {
+      "amount": 0,
+      "expected_default": "$0",
+      "expected_space": "$ 0",
+      "expected_symbol_clp": "CLP 0",
+      "expected_no_symbol": "0",
+      "description": "Monto cero"
+    },
+    {
+      "amount": 100,
+      "expected_default": "$100",
+      "expected_space": "$ 100",
+      "expected_symbol_clp": "CLP 100",
+      "expected_no_symbol": "100",
+      "description": "Monto de tres digitos sin separador de miles"
+    },
+    {
+      "amount": 1500,
+      "expected_default": "$1.500",
+      "expected_space": "$ 1.500",
+      "expected_symbol_clp": "CLP 1.500",
+      "expected_no_symbol": "1.500",
+      "description": "Monto de cuatro digitos con un punto de miles"
+    },
+    {
+      "amount": 1500000,
+      "expected_default": "$1.500.000",
+      "expected_space": "$ 1.500.000",
+      "expected_symbol_clp": "CLP 1.500.000",
+      "expected_no_symbol": "1.500.000",
+      "description": "Monto en millones con dos puntos de miles"
+    },
+    {
+      "amount": 1234567890,
+      "expected_default": "$1.234.567.890",
+      "expected_space": "$ 1.234.567.890",
+      "expected_symbol_clp": "CLP 1.234.567.890",
+      "expected_no_symbol": "1.234.567.890",
+      "description": "Monto grande de diez digitos"
+    },
+    {
+      "amount": -2500,
+      "expected_default": "-$2.500",
+      "expected_space": "-$ 2.500",
+      "expected_symbol_clp": "-CLP 2.500",
+      "expected_no_symbol": "-2.500",
+      "expected_parentheses": "($2.500)",
+      "description": "Monto negativo con formato estandar y contable entre parentesis"
+    },
+    {
+      "amount": -50000,
+      "expected_default": "-$50.000",
+      "expected_space": "-$ 50.000",
+      "expected_symbol_clp": "-CLP 50.000",
+      "expected_no_symbol": "-50.000",
+      "expected_parentheses": "($50.000)",
+      "description": "Monto negativo en decenas de miles"
+    }
+  ],
+  "clp_parsing": [
+    {
+      "input": "$1.500.000",
+      "expected": 1500000,
+      "valid": true,
+      "description": "CLP estandar con signo peso y puntos"
+    },
+    {
+      "input": "$ 1.500.000",
+      "expected": 1500000,
+      "valid": true,
+      "description": "CLP con espacio tras signo de peso"
+    },
+    {
+      "input": "1.500.000 CLP",
+      "expected": 1500000,
+      "valid": true,
+      "description": "CLP con sufijo CLP"
+    },
+    {
+      "input": "CLP 1.500.000",
+      "expected": 1500000,
+      "valid": true,
+      "description": "CLP con prefijo CLP"
+    },
+    {
+      "input": "$1500000",
+      "expected": 1500000,
+      "valid": true,
+      "description": "CLP sin puntos de miles"
+    },
+    {
+      "input": "1500000",
+      "expected": 1500000,
+      "valid": true,
+      "description": "Numero plano sin formato"
+    },
+    {
+      "input": "-$2.500",
+      "expected": -2500,
+      "valid": true,
+      "description": "CLP negativo con signo menos antes de pesos"
+    },
+    {
+      "input": "$-2.500",
+      "expected": -2500,
+      "valid": true,
+      "description": "CLP negativo con signo menos tras pesos"
+    },
+    {
+      "input": "($2.500)",
+      "expected": -2500,
+      "valid": true,
+      "description": "CLP negativo en formato contable con parentesis"
+    },
+    {
+      "input": "-2500",
+      "expected": -2500,
+      "valid": true,
+      "description": "Numero plano negativo"
+    },
+    {
+      "input": "(2500)",
+      "expected": -2500,
+      "valid": true,
+      "description": "Numero entre parentesis sin signo peso"
+    },
+    {
+      "input": "$0",
+      "expected": 0,
+      "valid": true,
+      "description": "Cero con signo peso"
+    },
+    {
+      "input": "0",
+      "expected": 0,
+      "valid": true,
+      "description": "Cero plano"
+    },
+    {
+      "input": "   $ 990   ",
+      "expected": 990,
+      "valid": true,
+      "description": "CLP con espacios al inicio y final"
+    },
+    {
+      "input": "abc",
+      "expected": 0,
+      "valid": false,
+      "description": "Texto sin digitos"
+    },
+    {
+      "input": "",
+      "expected": 0,
+      "valid": false,
+      "description": "String vacio"
+    },
+    {
+      "input": "   ",
+      "expected": 0,
+      "valid": false,
+      "description": "Espacios en blanco"
+    },
+    {
+      "input": "$",
+      "expected": 0,
+      "valid": false,
+      "description": "Solo signo peso sin digitos"
+    },
+    {
+      "input": "--100",
+      "expected": 0,
+      "valid": false,
+      "description": "Doble signo menos invalido"
+    },
+    {
+      "input": "12(34)5",
+      "expected": 0,
+      "valid": false,
+      "description": "Parentesis dentro de los digitos"
+    },
+    {
+      "input": ")100(",
+      "expected": 0,
+      "valid": false,
+      "description": "Parentesis invertidos"
+    },
+    {
+      "input": "(100)5",
+      "expected": 0,
+      "valid": false,
+      "description": "Digito posterior a parentesis de cierre"
+    },
+    {
+      "input": "1-00",
+      "expected": 0,
+      "valid": false,
+      "description": "Signo menos en medio de digitos"
+    },
+    {
+      "input": "100-",
+      "expected": 0,
+      "valid": false,
+      "description": "Signo menos posterior a los digitos"
+    },
+    {
+      "input": "-CLP 2.500",
+      "expected": -2500,
+      "valid": true,
+      "description": "Round-trip de FormatCLP negativo con prefijo CLP"
+    },
+    {
+      "input": "(CLP 2.500)",
+      "expected": -2500,
+      "valid": true,
+      "description": "CLP negativo contable con prefijo CLP dentro de parentesis"
+    },
+    {
+      "input": "($2.500 CLP)",
+      "expected": -2500,
+      "valid": true,
+      "description": "CLP negativo contable con sufijo CLP dentro de parentesis"
+    },
+    {
+      "input": "1.5",
+      "expected": 0,
+      "valid": false,
+      "description": "Separador de miles mal ubicado (posible decimal US) rechazado"
+    },
+    {
+      "input": "$10.50",
+      "expected": 0,
+      "valid": false,
+      "description": "Formato decimal estadounidense rechazado en CLP"
+    },
+    {
+      "input": "1..000",
+      "expected": 0,
+      "valid": false,
+      "description": "Puntos consecutivos invalidos"
+    },
+    {
+      "input": "10$00",
+      "expected": 0,
+      "valid": false,
+      "description": "Simbolo peso en medio de los digitos"
+    }
+  ],
+  "uf_formatting": [
+    {
+      "amount": 38450.25,
+      "decimals": 2,
+      "expected_default": "UF 38.450,25",
+      "expected_no_symbol": "38.450,25",
+      "description": "UF estandar con 2 decimales"
+    },
+    {
+      "amount": 1.5,
+      "decimals": 2,
+      "expected_default": "UF 1,50",
+      "expected_no_symbol": "1,50",
+      "description": "UF con relleno de cero en decimales"
+    },
+    {
+      "amount": 0,
+      "decimals": 2,
+      "expected_default": "UF 0,00",
+      "expected_no_symbol": "0,00",
+      "description": "UF cero con 2 decimales"
+    },
+    {
+      "amount": 1200,
+      "decimals": 2,
+      "expected_default": "UF 1.200,00",
+      "expected_no_symbol": "1.200,00",
+      "description": "UF entero formateado con decimales en cero"
+    },
+    {
+      "amount": 38450.2548,
+      "decimals": 4,
+      "expected_default": "UF 38.450,2548",
+      "expected_no_symbol": "38.450,2548",
+      "description": "UF financiera/seguros con 4 decimales"
+    },
+    {
+      "amount": 38450.256,
+      "decimals": 2,
+      "expected_default": "UF 38.450,26",
+      "expected_no_symbol": "38.450,26",
+      "description": "UF con redondeo al decimal mas cercano"
+    },
+    {
+      "amount": -15.5,
+      "decimals": 2,
+      "expected_default": "UF -15,50",
+      "expected_no_symbol": "-15,50",
+      "description": "UF negativa"
+    },
+    {
+      "amount": -0.001,
+      "decimals": 2,
+      "expected_default": "UF 0,00",
+      "expected_no_symbol": "0,00",
+      "description": "UF negativa pequena que redondea a cero no debe mostrar -0,00"
+    },
+    {
+      "amount": 1.125,
+      "decimals": 2,
+      "expected_default": "UF 1,13",
+      "expected_no_symbol": "1,13",
+      "description": "UF con mitad exacta binaria usa redondeo aritmetico half-away-from-zero en Go y TS"
+    }
+  ],
+  "utm_formatting": [
+    {
+      "amount": 67294,
+      "expected_default": "UTM 67.294",
+      "expected_no_symbol": "67.294",
+      "description": "UTM estandar de cinco digitos"
+    },
+    {
+      "amount": 0,
+      "expected_default": "UTM 0",
+      "expected_no_symbol": "0",
+      "description": "UTM cero"
+    },
+    {
+      "amount": 1500000,
+      "expected_default": "UTM 1.500.000",
+      "expected_no_symbol": "1.500.000",
+      "description": "UTM en millones"
+    },
+    {
+      "amount": -1000,
+      "expected_default": "UTM -1.000",
+      "expected_no_symbol": "-1.000",
+      "description": "UTM negativa"
+    }
+  ],
+  "iva_calculation": [
+    {
+      "input_amount": 100,
+      "is_bruto": false,
+      "expected_neto": 100,
+      "expected_iva": 19,
+      "expected_bruto": 119,
+      "description": "Neto base 100"
+    },
+    {
+      "input_amount": 1000,
+      "is_bruto": false,
+      "expected_neto": 1000,
+      "expected_iva": 190,
+      "expected_bruto": 1190,
+      "description": "Neto base 1.000"
+    },
+    {
+      "input_amount": 1005,
+      "is_bruto": false,
+      "expected_neto": 1005,
+      "expected_iva": 191,
+      "expected_bruto": 1196,
+      "description": "Neto 1.005 con redondeo de IVA hacia arriba (190.95 -> 191)"
+    },
+    {
+      "input_amount": 0,
+      "is_bruto": false,
+      "expected_neto": 0,
+      "expected_iva": 0,
+      "expected_bruto": 0,
+      "description": "Neto cero"
+    },
+    {
+      "input_amount": 100000,
+      "is_bruto": false,
+      "expected_neto": 100000,
+      "expected_iva": 19000,
+      "expected_bruto": 119000,
+      "description": "Neto 100.000"
+    },
+    {
+      "input_amount": 840,
+      "is_bruto": false,
+      "expected_neto": 840,
+      "expected_iva": 160,
+      "expected_bruto": 1000,
+      "description": "Neto 840 con IVA redondeado a 160 dando bruto 1.000"
+    },
+    {
+      "input_amount": 1000,
+      "is_bruto": true,
+      "expected_neto": 840,
+      "expected_iva": 160,
+      "expected_bruto": 1000,
+      "description": "Bruto 1.000 desglosado con regla SII (Neto 840, IVA 160)"
+    },
+    {
+      "input_amount": 119,
+      "is_bruto": true,
+      "expected_neto": 100,
+      "expected_iva": 19,
+      "expected_bruto": 119,
+      "description": "Bruto 119 exacto"
+    },
+    {
+      "input_amount": 1190,
+      "is_bruto": true,
+      "expected_neto": 1000,
+      "expected_iva": 190,
+      "expected_bruto": 1190,
+      "description": "Bruto 1.190 exacto"
+    },
+    {
+      "input_amount": 1,
+      "is_bruto": true,
+      "expected_neto": 1,
+      "expected_iva": 0,
+      "expected_bruto": 1,
+      "description": "Bruto 1 peso minimo"
+    },
+    {
+      "input_amount": 0,
+      "is_bruto": true,
+      "expected_neto": 0,
+      "expected_iva": 0,
+      "expected_bruto": 0,
+      "description": "Bruto cero"
+    },
+    {
+      "input_amount": 1196,
+      "is_bruto": true,
+      "expected_neto": 1005,
+      "expected_iva": 191,
+      "expected_bruto": 1196,
+      "description": "Bruto 1.196 desglosado a Neto 1.005 e IVA 191"
+    },
+    {
+      "input_amount": -50,
+      "is_bruto": false,
+      "expected_neto": -50,
+      "expected_iva": -10,
+      "expected_bruto": -60,
+      "description": "Neto negativo con tie-break de redondeo a -10 (-50 * 0.19 = -9.5)"
+    },
+    {
+      "input_amount": -60,
+      "is_bruto": true,
+      "expected_neto": -50,
+      "expected_iva": -10,
+      "expected_bruto": -60,
+      "description": "Bruto negativo -60 desglosado simetricamente a Neto -50 e IVA -10"
+    }
+  ],
+  "to_words": [
+    {
+      "amount": 0,
+      "expected": "cero pesos",
+      "expected_no_currency": "cero",
+      "description": "Cero"
+    },
+    {
+      "amount": 1,
+      "expected": "un peso",
+      "expected_no_currency": "un",
+      "description": "Un peso singular"
+    },
+    {
+      "amount": 2,
+      "expected": "dos pesos",
+      "expected_no_currency": "dos",
+      "description": "Dos pesos"
+    },
+    {
+      "amount": 10,
+      "expected": "diez pesos",
+      "expected_no_currency": "diez",
+      "description": "Diez pesos"
+    },
+    {
+      "amount": 16,
+      "expected": "dieciséis pesos",
+      "expected_no_currency": "dieciséis",
+      "description": "Dieciseis con tilde"
+    },
+    {
+      "amount": 20,
+      "expected": "veinte pesos",
+      "expected_no_currency": "veinte",
+      "description": "Veinte pesos"
+    },
+    {
+      "amount": 21,
+      "expected": "veintiún pesos",
+      "expected_no_currency": "veintiún",
+      "description": "Veintiun con tilde"
+    },
+    {
+      "amount": 29,
+      "expected": "veintinueve pesos",
+      "expected_no_currency": "veintinueve",
+      "description": "Veintinueve pesos"
+    },
+    {
+      "amount": 30,
+      "expected": "treinta pesos",
+      "expected_no_currency": "treinta",
+      "description": "Treinta pesos"
+    },
+    {
+      "amount": 31,
+      "expected": "treinta y un pesos",
+      "expected_no_currency": "treinta y un",
+      "description": "Treinta y un pesos"
+    },
+    {
+      "amount": 99,
+      "expected": "noventa y nueve pesos",
+      "expected_no_currency": "noventa y nueve",
+      "description": "Noventa y nueve pesos"
+    },
+    {
+      "amount": 100,
+      "expected": "cien pesos",
+      "expected_no_currency": "cien",
+      "description": "Cien pesos exacto"
+    },
+    {
+      "amount": 101,
+      "expected": "ciento un pesos",
+      "expected_no_currency": "ciento un",
+      "description": "Ciento un pesos"
+    },
+    {
+      "amount": 200,
+      "expected": "doscientos pesos",
+      "expected_no_currency": "doscientos",
+      "description": "Doscientos pesos"
+    },
+    {
+      "amount": 500,
+      "expected": "quinientos pesos",
+      "expected_no_currency": "quinientos",
+      "description": "Quinientos pesos irregular"
+    },
+    {
+      "amount": 700,
+      "expected": "setecientos pesos",
+      "expected_no_currency": "setecientos",
+      "description": "Setecientos pesos irregular"
+    },
+    {
+      "amount": 900,
+      "expected": "novecientos pesos",
+      "expected_no_currency": "novecientos",
+      "description": "Novecientos pesos irregular"
+    },
+    {
+      "amount": 1000,
+      "expected": "mil pesos",
+      "expected_no_currency": "mil",
+      "description": "Mil pesos sin 'un'"
+    },
+    {
+      "amount": 1001,
+      "expected": "mil un pesos",
+      "expected_no_currency": "mil un",
+      "description": "Mil un pesos"
+    },
+    {
+      "amount": 1500,
+      "expected": "mil quinientos pesos",
+      "expected_no_currency": "mil quinientos",
+      "description": "Mil quinientos pesos"
+    },
+    {
+      "amount": 2000,
+      "expected": "dos mil pesos",
+      "expected_no_currency": "dos mil",
+      "description": "Dos mil pesos"
+    },
+    {
+      "amount": 21000,
+      "expected": "veintiún mil pesos",
+      "expected_no_currency": "veintiún mil",
+      "description": "Veintiun mil pesos"
+    },
+    {
+      "amount": 100000,
+      "expected": "cien mil pesos",
+      "expected_no_currency": "cien mil",
+      "description": "Cien mil pesos"
+    },
+    {
+      "amount": 1000000,
+      "expected": "un millón de pesos",
+      "expected_no_currency": "un millón",
+      "description": "Un millon cerrado con 'de pesos'"
+    },
+    {
+      "amount": 1000001,
+      "expected": "un millón un pesos",
+      "expected_no_currency": "un millón un",
+      "description": "Un millon con unidad posterior sin 'de'"
+    },
+    {
+      "amount": 1500000,
+      "expected": "un millón quinientos mil pesos",
+      "expected_no_currency": "un millón quinientos mil",
+      "description": "Un millon quinientos mil pesos sin 'de'"
+    },
+    {
+      "amount": 2000000,
+      "expected": "dos millones de pesos",
+      "expected_no_currency": "dos millones",
+      "description": "Dos millones cerrado con 'de pesos'"
+    },
+    {
+      "amount": 2000005,
+      "expected": "dos millones cinco pesos",
+      "expected_no_currency": "dos millones cinco",
+      "description": "Dos millones con unidad posterior sin 'de'"
+    },
+    {
+      "amount": 1000000000,
+      "expected": "mil millones de pesos",
+      "expected_no_currency": "mil millones",
+      "description": "Mil millones cerrado con 'de pesos'"
+    },
+    {
+      "amount": 1000000000000,
+      "expected": "un billón de pesos",
+      "expected_no_currency": "un billón",
+      "description": "Un billon cerrado con 'de pesos' en escala larga espanola"
+    },
+    {
+      "amount": -500,
+      "expected": "menos quinientos pesos",
+      "expected_no_currency": "menos quinientos",
+      "description": "Monto negativo en palabras"
+    },
+    {
+      "amount": 1000000000000000,
+      "expected": "mil billones de pesos",
+      "expected_no_currency": "mil billones",
+      "description": "Mil billones cerrado con 'de pesos'"
+    },
+    {
+      "amount": 1500000000000000,
+      "expected": "mil quinientos billones de pesos",
+      "expected_no_currency": "mil quinientos billones",
+      "description": "Mil quinientos billones cerrado con 'de pesos'"
+    },
+    {
+      "amount": 2000000000000000,
+      "expected": "dos mil billones de pesos",
+      "expected_no_currency": "dos mil billones",
+      "description": "Dos mil billones cerrado con 'de pesos'"
+    }
+  ]
+}
