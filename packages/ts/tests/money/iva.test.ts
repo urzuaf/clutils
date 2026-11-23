@@ -45,4 +45,10 @@ describe('IVA Calculation Suite (specs/tests/money_formatting.json)', () => {
     const resBruto = calculateIVA(1100, true, { rate: 0.10 });
     expect(resBruto).toEqual({ neto: 1000, iva: 100, bruto: 1100 });
   });
+
+  it('evita -0 en IVA de montos negativos pequeños', () => {
+    const res = calculateIVA(-1, false);
+    expect(Object.is(res.iva, 0)).toBe(true);
+    expect(res).toEqual({ neto: -1, iva: 0, bruto: -1 });
+  });
 });

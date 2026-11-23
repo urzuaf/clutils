@@ -240,6 +240,27 @@
       "description": "Búsqueda de Ñuble sin eñe 'nuble'"
     },
     {
+      "query": "VIII",
+      "expected_code": "08",
+      "expected_iso": "CL-BI",
+      "expected_name": "Biobío",
+      "description": "Búsqueda por número romano 'VIII'"
+    },
+    {
+      "query": "I",
+      "expected_code": "01",
+      "expected_iso": "CL-TA",
+      "expected_name": "Tarapacá",
+      "description": "Búsqueda por número romano 'I'"
+    },
+    {
+      "query": "XVI",
+      "expected_code": "16",
+      "expected_iso": "CL-NB",
+      "expected_name": "Ñuble",
+      "description": "Búsqueda por número romano 'XVI'"
+    },
+    {
       "query": "atlantida",
       "expected_code": null,
       "expected_iso": null,

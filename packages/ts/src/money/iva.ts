@@ -43,7 +43,8 @@ export interface IVAOptions {
  * Redondea un numero alejandose del cero (estandar contable simetrico / round half away from zero).
  */
 function roundHalfAway(val: number): number {
-  return Math.sign(val) * Math.round(Math.abs(val));
+  const rounded = Math.sign(val) * Math.round(Math.abs(val));
+  return rounded === 0 ? 0 : rounded;
 }
 
 export function calculateIVA(amount: number, isBruto: boolean, options?: IVAOptions): IVABreakdown {
@@ -57,11 +58,11 @@ export function calculateIVA(amount: number, isBruto: boolean, options?: IVAOpti
     const bruto = amount;
     const neto = roundHalfAway(bruto / (1 + rate));
     const iva = bruto - neto;
-    return { neto, iva, bruto };
+    return { neto, iva: iva === 0 ? 0 : iva, bruto };
   }
 
   const neto = amount;
   const iva = roundHalfAway(neto * rate);
   const bruto = neto + iva;
-  return { neto, iva, bruto };
+  return { neto, iva, bruto: bruto === 0 ? 0 : bruto };
 }

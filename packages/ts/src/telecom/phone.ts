@@ -20,10 +20,7 @@ export type PhoneType =
  */
 export type PhoneFormatStyle = 'international' | 'national' | 'e164';
 
-/**
- * Códigos de área oficiales de 2 dígitos de red fija regional según SUBTEL.
- */
-export const REGIONAL_AREA_CODES = new Set([
+const regionalAreaCodesList = [
   '32', // Valparaíso / Isla de Pascua
   '33', // Quillota
   '34', // Los Andes / San Felipe
@@ -47,25 +44,43 @@ export const REGIONAL_AREA_CODES = new Set([
   '72', // Rancagua / O'Higgins
   '73', // Linares
   '75', // Curicó
-]);
+] as const;
 
-/**
- * Números cortos oficiales de servicios de emergencia en Chile.
- */
-export const EMERGENCY_NUMBERS = new Set([
+const emergencyNumbersList = [
+  '130', // CONAF Incendios Forestales
   '131', // SAMU Ambulancia
   '132', // Bomberos
   '133', // Carabineros
-  '134', // PDI
-  '149', // Fono Familia Carabineros
-  '130', // CONAF Incendios Forestales
+  '134', // PDI Policía de Investigaciones
   '135', // Fono Drogas
   '136', // Cuerpo de Socorro Andino
   '137', // Rescate Marítimo Armada
   '138', // Rescate Aéreo FACh
   '139', // Fono Información Policial
+  '143', // Fono Acción
   '147', // Fono Niños
-]);
+  '149', // Fono Familia Carabineros
+  '911', // Central de Carabineros más cercana (móviles)
+  '1404', // Servicio de Rescate
+  '1407', // Fono Emergencia (Mutual de Seguridad)
+  '1411', // Fono Emergencia (Metro de Santiago)
+  '1412', // Fono Drogas (SENDA)
+  '1488', // Fono Denuncia (Metro de Santiago)
+] as const;
+
+/** Sets internos privados para evitar corrupción por mutación externa. */
+const internalRegionalAreaCodes = new Set<string>(regionalAreaCodesList);
+const internalEmergencyNumbers = new Set<string>(emergencyNumbersList);
+
+/**
+ * Códigos de área oficiales de 2 dígitos de red fija regional según SUBTEL.
+ */
+export const REGIONAL_AREA_CODES: ReadonlySet<string> = new Set<string>(regionalAreaCodesList);
+
+/**
+ * Números cortos oficiales de servicios de emergencia en Chile.
+ */
+export const EMERGENCY_NUMBERS: ReadonlySet<string> = new Set<string>(emergencyNumbersList);
 
 /**
  * Estructura interna de un teléfono chileno procesado.
@@ -123,8 +138,8 @@ function parsePhone(phone: string): ParsedPhone {
 
   let national: string;
 
-  // Caso con prefijo de país 56
-  if (digits.startsWith('56')) {
+  // Caso con prefijo de país 56 (solo si tiene al menos 10 dígitos: 56 + 8/9/10 dígitos)
+  if (digits.startsWith('56') && digits.length >= 10) {
     const rest = digits.slice(2);
     if (rest.length === 8) {
       // +56 seguido de 8 dígitos (móvil legacy sin el 9 inicial)
@@ -179,7 +194,7 @@ function parsePhone(phone: string): ParsedPhone {
   // 3. Red Fija Regional: código de área de 2 dígitos y 9 dígitos en total
   if (national.length === 9) {
     const prefix2 = national.slice(0, 2);
-    if (REGIONAL_AREA_CODES.has(prefix2)) {
+    if (internalRegionalAreaCodes.has(prefix2)) {
       return {
         nationalNumber: national,
         type: 'landline',
@@ -387,8 +402,8 @@ export function getPhoneType(phone: string): PhoneType {
     }
   }
 
-  if (hasOnlyDigitsOrSeparators && cleanDigits.length === 3) {
-    if (EMERGENCY_NUMBERS.has(cleanDigits)) {
+  if (hasOnlyDigitsOrSeparators && (cleanDigits.length === 3 || cleanDigits.length === 4)) {
+    if (internalEmergencyNumbers.has(cleanDigits)) {
       return 'emergency';
     }
   }

@@ -3,7 +3,7 @@
  * @description Formateo de Unidades de Fomento (UF) segun la convencion de la CMF.
  */
 
-import { formatThousands } from './clp.js';
+import { formatThousandsStr } from './clp.js';
 
 export interface UFFormatOptions {
   /**
@@ -25,9 +25,17 @@ export interface UFFormatOptions {
   noSymbol?: boolean;
 }
 
+function isAllZeros(s: string): boolean {
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] !== '0') return false;
+  }
+  return true;
+}
+
 /**
  * Formatea un valor en Unidades de Fomento (UF) segun la convencion oficial chilena,
- * utilizando puntos para separar los miles y coma para los decimales.
+ * utilizando puntos para separar los miles, coma para los decimales y redondeo estandar
+ * aritmetico (round half away from zero) consistente con Go.
  *
  * @param amount - Valor numerico en UF.
  * @param options - Opciones de formateo.
@@ -41,18 +49,47 @@ export interface UFFormatOptions {
  * ```
  */
 export function formatUF(amount: number, options?: UFFormatOptions): string {
-  const decimals = options?.decimals !== undefined && options.decimals > 0 ? options.decimals : 2;
+  const decimals = options?.decimals !== undefined && options.decimals > 0 ? Math.trunc(options.decimals) : 2;
   const symbol = options?.noSymbol ? '' : (options?.symbol ?? 'UF');
 
-  const isNegative = amount < 0;
-  const absAmount = Math.abs(amount);
+  const safeAmount = Number.isFinite(amount) ? amount : 0;
+  let isNegative = safeAmount < 0;
+  const absAmount = Math.abs(safeAmount);
 
-  const formattedFloat = absAmount.toFixed(decimals);
-  const dotIdx = formattedFloat.indexOf('.');
-  const intPart = dotIdx !== -1 ? formattedFloat.slice(0, dotIdx) : formattedFloat;
-  const decPart = dotIdx !== -1 ? formattedFloat.slice(dotIdx + 1) : '';
+  let intPart: string;
+  let decPart: string;
 
-  const formattedInt = formatThousands(BigInt(intPart));
+  const factor = Math.pow(10, decimals);
+  const scaled = absAmount * factor;
+
+  if (decimals <= 12 && Number.isFinite(scaled) && scaled <= 9e15) {
+    const roundedInt = Math.round(scaled);
+    const rawDigits = roundedInt.toString();
+    if (rawDigits.length <= decimals) {
+      intPart = '0';
+      decPart = '0'.repeat(decimals - rawDigits.length) + rawDigits;
+    } else {
+      const splitPos = rawDigits.length - decimals;
+      intPart = rawDigits.slice(0, splitPos);
+      decPart = rawDigits.slice(splitPos);
+    }
+  } else if (absAmount >= 1e21) {
+    // Números >= 1e21 en float64 ya son enteros exactos (sin fracción)
+    intPart = BigInt(absAmount).toString();
+    decPart = '0'.repeat(decimals);
+  } else {
+    const formattedFloat = absAmount.toFixed(decimals);
+    const dotIdx = formattedFloat.indexOf('.');
+    intPart = dotIdx !== -1 ? formattedFloat.slice(0, dotIdx) : formattedFloat;
+    decPart = dotIdx !== -1 ? formattedFloat.slice(dotIdx + 1) : '';
+  }
+
+  // Evitar "-0,00" cuando un valor negativo pequeño redondea a cero
+  if (isNegative && isAllZeros(intPart) && isAllZeros(decPart)) {
+    isNegative = false;
+  }
+
+  const formattedInt = formatThousandsStr(intPart);
   const numStr = decimals > 0 && decPart.length > 0 ? `${formattedInt},${decPart}` : formattedInt;
 
   const prefix = symbol.length > 0 ? `${symbol} ` : '';

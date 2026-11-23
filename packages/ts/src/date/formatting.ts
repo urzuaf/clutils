@@ -70,6 +70,19 @@ function daysInMonth(year: number, month: number): number {
  * formatDate(new Date(2026, 8, 18), 'full'); // "Viernes, 18 de septiembre de 2026"
  * ```
  */
+function parseStrictDigits(s: string): number | null {
+  if (s.length === 0) return null;
+  let val = 0;
+  for (let i = 0; i < s.length; i++) {
+    const code = s.charCodeAt(i);
+    if (code < 48 || code > 57) {
+      return null;
+    }
+    val = val * 10 + (code - 48);
+  }
+  return val;
+}
+
 export function formatDate(date: Date, style: DateFormatStyle = 'numeric'): string {
   const day = date.getDate();
   const month = date.getMonth();
@@ -77,19 +90,20 @@ export function formatDate(date: Date, style: DateFormatStyle = 'numeric'): stri
 
   const dayPad = day.toString().padStart(2, '0');
   const monthPad = (month + 1).toString().padStart(2, '0');
+  const yearPad = year.toString().padStart(4, '0');
 
   switch (style) {
     case 'numeric_hyphen':
-      return `${dayPad}-${monthPad}-${year}`;
+      return `${dayPad}-${monthPad}-${yearPad}`;
     case 'formal':
-      return `${day} de ${spanishMonths[month]} de ${year}`;
+      return `${day} de ${spanishMonths[month]} de ${yearPad}`;
     case 'full': {
       const weekday = spanishWeekdays[date.getDay()];
-      return `${weekday}, ${day} de ${spanishMonths[month]} de ${year}`;
+      return `${weekday}, ${day} de ${spanishMonths[month]} de ${yearPad}`;
     }
     case 'numeric':
     default:
-      return `${dayPad}/${monthPad}/${year}`;
+      return `${dayPad}/${monthPad}/${yearPad}`;
   }
 }
 
@@ -124,19 +138,19 @@ export function parseDate(text: string): Date {
   }
 
   const [dayStr, monthStr, yearStr] = parts;
-  if (!dayStr || !monthStr || !yearStr) {
-    throw new Error('Componentes de fecha vacíos');
+  if (dayStr.length < 1 || dayStr.length > 2 || monthStr.length < 1 || monthStr.length > 2) {
+    throw new Error('Componentes de día o mes inválidos');
   }
 
   if (yearStr.length !== 4) {
     throw new Error(`El año debe tener 4 dígitos: "${yearStr}"`);
   }
 
-  const day = parseInt(dayStr, 10);
-  const month = parseInt(monthStr, 10);
-  const year = parseInt(yearStr, 10);
+  const day = parseStrictDigits(dayStr);
+  const month = parseStrictDigits(monthStr);
+  const year = parseStrictDigits(yearStr);
 
-  if (Number.isNaN(day) || Number.isNaN(month) || Number.isNaN(year)) {
+  if (day === null || month === null || year === null) {
     throw new Error('Componentes numéricos inválidos');
   }
 
@@ -153,7 +167,11 @@ export function parseDate(text: string): Date {
     throw new Error(`Día fuera de rango: ${day} para mes ${month} del año ${year}`);
   }
 
-  return new Date(year, month - 1, day, 12, 0, 0);
+  // Usar setFullYear para evitar que JS interprete años 0..99 como 1900..1999
+  const result = new Date(0);
+  result.setFullYear(year, month - 1, day);
+  result.setHours(12, 0, 0, 0);
+  return result;
 }
 
 /**

@@ -38,6 +38,12 @@
       "description": "Numero movil de 8 digitos sin prefijo 9 (asume movil nacional)"
     },
     {
+      "input": "5612 3456",
+      "expected_e164": "+56956123456",
+      "valid": true,
+      "description": "Numero movil de 8 digitos iniciado en 56 (no debe confundirse con codigo de pais)"
+    },
+    {
       "input": "9-1234-5678",
       "expected_e164": "+56912345678",
       "valid": true,
@@ -270,6 +276,26 @@
       "input": "136",
       "expected_type": "emergency",
       "description": "Emergencia Socorro Andino"
+    },
+    {
+      "input": "911",
+      "expected_type": "emergency",
+      "description": "Emergencia Carabineros 911"
+    },
+    {
+      "input": "143",
+      "expected_type": "emergency",
+      "description": "Emergencia Fono Accion 143"
+    },
+    {
+      "input": "1411",
+      "expected_type": "emergency",
+      "description": "Emergencia Metro de Santiago 1411 (4 digitos)"
+    },
+    {
+      "input": "1412",
+      "expected_type": "emergency",
+      "description": "Emergencia Fono Drogas SENDA 1412 (4 digitos)"
     },
     {
       "input": "+56 72 212 3456",

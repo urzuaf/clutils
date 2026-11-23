@@ -32,4 +32,9 @@ describe('toWords Suite (specs/tests/money_formatting.json)', () => {
       expect(toWords(tc.amount, { noCurrency: true })).toBe(tc.expected_no_currency);
     });
   }
+
+  it('soporta bigint >= 10^21 sin indexar fuera de rango', () => {
+    expect(toWords(10n ** 21n)).toBe('mil trillones de pesos');
+    expect(toWords(2n * 10n ** 21n)).toBe('dos mil trillones de pesos');
+  });
 });

@@ -82,8 +82,10 @@ function numberToWords(val: bigint): string {
   if (trillones > 0n) {
     if (trillones === 1n) {
       parts.push('un trillón');
-    } else {
+    } else if (trillones < 1000n) {
       parts.push(`${convertGroup(Number(trillones))} trillones`);
+    } else {
+      parts.push(`${numberToWords(trillones)} trillones`);
     }
   }
 
@@ -168,8 +170,18 @@ function numberToWords(val: bigint): string {
  */
 export function toWords(amount: number | bigint, options?: ToWordsOptions): string {
   const noCurrency = options?.noCurrency ?? false;
-  const isNegative = amount < 0;
-  const absVal = isNegative ? (typeof amount === 'bigint' ? -amount : BigInt(-amount)) : BigInt(amount);
+
+  let normalized: bigint;
+  if (typeof amount === 'bigint') {
+    normalized = amount;
+  } else if (!Number.isFinite(amount)) {
+    normalized = 0n;
+  } else {
+    normalized = BigInt(Math.trunc(amount));
+  }
+
+  const isNegative = normalized < 0n;
+  const absVal = isNegative ? -normalized : normalized;
 
   const text = numberToWords(absVal);
 

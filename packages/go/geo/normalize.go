@@ -17,6 +17,10 @@ func normalizeSearch(s string) string {
 	b.Grow(len(trimmed))
 
 	for _, r := range trimmed {
+		// Omitir marcas diacríticas combinantes Unicode (NFD, ej. 'n' + '\u0303')
+		if r >= 0x0300 && r <= 0x036F {
+			continue
+		}
 		lr := unicode.ToLower(r)
 		switch lr {
 		case 'á', 'à', 'ä', 'â':
@@ -89,7 +93,15 @@ func searchEntity[T any](
 		}
 	}
 
-	// Paso 3: Coincidencia parcial contenida (ej: "metropolitana" en "metropolitana de santiago")
+	// Paso 3: Coincidencia por prefijo del nombre normalizado (coherente con searchAllEntities[0])
+	for i := range items {
+		if strings.HasPrefix(normalizeSearch(getName(items[i])), normQuery) {
+			res := items[i]
+			return &res, true
+		}
+	}
+
+	// Paso 4: Coincidencia parcial contenida (ej: "metropolitana" en "metropolitana de santiago")
 	for i := range items {
 		if strings.Contains(normalizeSearch(getName(items[i])), normQuery) {
 			res := items[i]
@@ -144,6 +156,9 @@ func searchAllEntities[T any](
 	}
 
 	if normQuery == "" {
+		if exactMatches == nil {
+			return []T{}
+		}
 		return exactMatches
 	}
 

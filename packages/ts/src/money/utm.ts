@@ -3,7 +3,7 @@
  * @description Formateo de Unidades Tributarias Mensuales (UTM).
  */
 
-import { formatThousands } from './clp.js';
+import { formatThousandsStr } from './clp.js';
 
 export interface UTMFormatOptions {
   /**
@@ -36,9 +36,22 @@ export interface UTMFormatOptions {
 export function formatUTM(amount: number | bigint, options?: UTMFormatOptions): string {
   const symbol = options?.noSymbol ? '' : (options?.symbol ?? 'UTM');
 
-  const isNegative = amount < 0;
-  const absAmount = isNegative ? (typeof amount === 'bigint' ? -amount : Math.abs(amount)) : amount;
-  const numStr = formatThousands(absAmount);
+  let isNegative: boolean;
+  let absDigits: string;
+  if (typeof amount === 'bigint') {
+    isNegative = amount < 0n;
+    absDigits = (isNegative ? -amount : amount).toString();
+  } else if (!Number.isFinite(amount)) {
+    isNegative = false;
+    absDigits = '0';
+  } else {
+    const rounded = Math.sign(amount) * Math.round(Math.abs(amount));
+    isNegative = rounded < 0;
+    const absVal = Math.abs(rounded);
+    absDigits = absVal >= 1e21 ? BigInt(absVal).toString() : absVal.toString();
+  }
+
+  const numStr = formatThousandsStr(absDigits);
 
   const prefix = symbol.length > 0 ? `${symbol} ` : '';
   const sign = isNegative ? '-' : '';

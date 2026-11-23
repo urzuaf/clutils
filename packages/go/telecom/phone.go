@@ -126,8 +126,8 @@ func parsePhone(phone string) (*parsedPhone, error) {
 
 	var national string
 
-	// Caso con prefijo de país 56
-	if strings.HasPrefix(digits, "56") {
+	// Caso con prefijo de país 56 (solo si tiene al menos 10 dígitos: 56 + 8/9/10 dígitos)
+	if strings.HasPrefix(digits, "56") && len(digits) >= 10 {
 		rest := digits[2:]
 		switch len(rest) {
 		case 8:
@@ -345,7 +345,7 @@ func GetPhoneType(phone string) PhoneType {
 	}
 
 	cleanStr := cleanDigits.String()
-	if hasOnlyDigitsOrSeparators && len(cleanStr) == 3 {
+	if hasOnlyDigitsOrSeparators && (len(cleanStr) == 3 || len(cleanStr) == 4) {
 		if _, ok := emergencyNumbers[cleanStr]; ok {
 			return PhoneTypeEmergency
 		}

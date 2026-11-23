@@ -204,6 +204,48 @@
       "expected": 0,
       "valid": false,
       "description": "Signo menos posterior a los digitos"
+    },
+    {
+      "input": "-CLP 2.500",
+      "expected": -2500,
+      "valid": true,
+      "description": "Round-trip de FormatCLP negativo con prefijo CLP"
+    },
+    {
+      "input": "(CLP 2.500)",
+      "expected": -2500,
+      "valid": true,
+      "description": "CLP negativo contable con prefijo CLP dentro de parentesis"
+    },
+    {
+      "input": "($2.500 CLP)",
+      "expected": -2500,
+      "valid": true,
+      "description": "CLP negativo contable con sufijo CLP dentro de parentesis"
+    },
+    {
+      "input": "1.5",
+      "expected": 0,
+      "valid": false,
+      "description": "Separador de miles mal ubicado (posible decimal US) rechazado"
+    },
+    {
+      "input": "$10.50",
+      "expected": 0,
+      "valid": false,
+      "description": "Formato decimal estadounidense rechazado en CLP"
+    },
+    {
+      "input": "1..000",
+      "expected": 0,
+      "valid": false,
+      "description": "Puntos consecutivos invalidos"
+    },
+    {
+      "input": "10$00",
+      "expected": 0,
+      "valid": false,
+      "description": "Simbolo peso en medio de los digitos"
     }
   ],
   "uf_formatting": [
@@ -255,6 +297,20 @@
       "expected_default": "UF -15,50",
       "expected_no_symbol": "-15,50",
       "description": "UF negativa"
+    },
+    {
+      "amount": -0.001,
+      "decimals": 2,
+      "expected_default": "UF 0,00",
+      "expected_no_symbol": "0,00",
+      "description": "UF negativa pequena que redondea a cero no debe mostrar -0,00"
+    },
+    {
+      "amount": 1.125,
+      "decimals": 2,
+      "expected_default": "UF 1,13",
+      "expected_no_symbol": "1,13",
+      "description": "UF con mitad exacta binaria usa redondeo aritmetico half-away-from-zero en Go y TS"
     }
   ],
   "utm_formatting": [

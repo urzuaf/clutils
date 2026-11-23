@@ -72,4 +72,11 @@ describe('CLP Parsing Suite (specs/tests/money_formatting.json)', () => {
       }
     });
   }
+
+  it('evita -0 en parseCLP("-0") y maneja floats en formatCLP', () => {
+    expect(Object.is(parseCLP('-0'), 0)).toBe(true);
+    expect(Object.is(parseCLP('($0)'), 0)).toBe(true);
+    expect(formatCLP(1500.5)).toBe('$1.501');
+    expect(formatCLP(-1500.5)).toBe('-$1.501');
+  });
 });

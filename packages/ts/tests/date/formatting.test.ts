@@ -83,6 +83,13 @@ describe('Format Date Suite (specs/tests/date_formatting.json)', () => {
       expect(formatDate(testDate, 'full')).toBe(tc.expected_full);
     });
   }
+
+  it('rellena años menores a 1000 con ceros a 4 dígitos (paridad con Go)', () => {
+    const d = parseDate('05/01/0500');
+    expect(formatDate(d, 'numeric')).toBe('05/01/0500');
+    expect(formatDate(d, 'numeric_hyphen')).toBe('05-01-0500');
+    expect(formatDate(d, 'formal')).toBe('5 de enero de 0500');
+  });
 });
 
 describe('Is Weekend Suite (specs/tests/date_formatting.json)', () => {

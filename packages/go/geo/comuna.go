@@ -2104,7 +2104,7 @@ func GetComunasByRegion(regionQuery string) []Comuna {
 		return []Comuna{}
 	}
 
-	var result []Comuna
+	result := []Comuna{}
 	for i := range comunas {
 		if comunas[i].RegionCode == reg.Code {
 			result = append(result, comunas[i])
@@ -2122,7 +2122,7 @@ func GetComunasByProvincia(provinciaQuery string) []Comuna {
 		return []Comuna{}
 	}
 
-	var result []Comuna
+	result := []Comuna{}
 	for i := range comunas {
 		if comunas[i].ProvinciaCode == prov.Code {
 			result = append(result, comunas[i])

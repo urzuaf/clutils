@@ -35,9 +35,8 @@ type CLPFormatOptions struct {
 	NegativeFormat NegativeFormat
 }
 
-// formatThousands formatea un entero positivo con separadores de miles '.' de forma lineal y sin regex.
-func formatThousands(val uint64) string {
-	s := strconv.FormatUint(val, 10)
+// formatThousandsStr formatea una cadena de dígitos enteros positivos con separadores de miles '.'.
+func formatThousandsStr(s string) string {
 	n := len(s)
 	if n <= 3 {
 		return s
@@ -60,6 +59,11 @@ func formatThousands(val uint64) string {
 	}
 
 	return string(res)
+}
+
+// formatThousands formatea un entero positivo con separadores de miles '.' de forma lineal y sin regex.
+func formatThousands(val uint64) string {
+	return formatThousandsStr(strconv.FormatUint(val, 10))
 }
 
 // FormatCLP formatea un monto entero a pesos chilenos (CLP) segun la convencion local,
@@ -131,46 +135,71 @@ func ParseCLP(amount string) (int64, error) {
 		return 0, fmt.Errorf("el texto está vacío")
 	}
 
-	// Normalizar removiendo "CLP" (prefijo o sufijo) si existe
-	clean := trimmed
-	cleanUpper := strings.ToUpper(clean)
-	if strings.HasPrefix(cleanUpper, "CLP") {
-		clean = strings.TrimSpace(clean[3:])
-	} else if strings.HasSuffix(cleanUpper, "CLP") {
-		clean = strings.TrimSpace(clean[:len(clean)-3])
-	}
-
 	var (
-		isNegative  bool
-		hasParen    bool
-		minusCount  int
-		openParens  int
-		closeParens int
-		digits      []byte
+		isNegative    bool
+		hasParen      bool
+		digitsStarted bool
+		digitsEnded   bool
+		minusCount    int
+		dollarCount   int
+		clpCount      int
+		openParens    int
+		closeParens   int
+		rawNum        strings.Builder
 	)
 
-	for i := 0; i < len(clean); i++ {
-		ch := clean[i]
+	for i := 0; i < len(trimmed); i++ {
+		ch := trimmed[i]
+
+		// Reconocer token "CLP" (prefijo, sufijo o tras signo/paréntesis)
+		if (ch == 'C' || ch == 'c') && i+3 <= len(trimmed) && strings.EqualFold(trimmed[i:i+3], "CLP") {
+			clpCount++
+			if clpCount > 1 {
+				return 0, fmt.Errorf("múltiples prefijos CLP inválidos")
+			}
+			if digitsStarted {
+				digitsEnded = true
+			}
+			i += 2
+			continue
+		}
+
 		switch {
 		case ch >= '0' && ch <= '9':
 			if closeParens > 0 {
 				return 0, fmt.Errorf("dígito posterior al paréntesis de cierre")
 			}
-			digits = append(digits, ch)
+			if digitsEnded {
+				return 0, fmt.Errorf("formato numérico discontinuo inválido")
+			}
+			digitsStarted = true
+			rawNum.WriteByte(ch)
 		case ch == '.':
-			// Separador de miles valido
-			continue
-		case ch == '$' || ch == ' ' || ch == '\t':
-			// Simbolo o espacio valido
-			continue
+			if closeParens > 0 || digitsEnded {
+				return 0, fmt.Errorf("separador de miles en posición inválida")
+			}
+			digitsStarted = true
+			rawNum.WriteByte(ch)
+		case ch == '$':
+			if digitsStarted {
+				return 0, fmt.Errorf("símbolo '$' no puede ir después de dígitos")
+			}
+			dollarCount++
+			if dollarCount > 1 {
+				return 0, fmt.Errorf("múltiples símbolos '$' inválidos")
+			}
+		case ch == ' ' || ch == '\t':
+			if digitsStarted {
+				digitsEnded = true
+			}
 		case ch == '-':
-			if len(digits) > 0 {
+			if digitsStarted {
 				return 0, fmt.Errorf("signo menos no puede ir después de dígitos")
 			}
 			minusCount++
 			isNegative = true
 		case ch == '(':
-			if len(digits) > 0 {
+			if digitsStarted {
 				return 0, fmt.Errorf("paréntesis de apertura no puede ir después de dígitos")
 			}
 			openParens++
@@ -179,6 +208,9 @@ func ParseCLP(amount string) (int64, error) {
 				return 0, fmt.Errorf("paréntesis de cierre sin apertura previa")
 			}
 			closeParens++
+			if digitsStarted {
+				digitsEnded = true
+			}
 		default:
 			return 0, fmt.Errorf("carácter no válido en monto CLP: %q", ch)
 		}
@@ -199,11 +231,28 @@ func ParseCLP(amount string) (int64, error) {
 		return 0, fmt.Errorf("múltiples signos menos inválidos")
 	}
 
-	if len(digits) == 0 {
+	numStr := rawNum.String()
+	if len(numStr) == 0 {
 		return 0, fmt.Errorf("el texto no contiene dígitos numéricos válidos")
 	}
 
-	val, err := strconv.ParseInt(string(digits), 10, 64)
+	var digits string
+	if strings.ContainsRune(numStr, '.') {
+		groups := strings.Split(numStr, ".")
+		if len(groups[0]) < 1 || len(groups[0]) > 3 {
+			return 0, fmt.Errorf("separadores de miles mal ubicados: %q", numStr)
+		}
+		for i := 1; i < len(groups); i++ {
+			if len(groups[i]) != 3 {
+				return 0, fmt.Errorf("separadores de miles mal ubicados: %q", numStr)
+			}
+		}
+		digits = strings.Join(groups, "")
+	} else {
+		digits = numStr
+	}
+
+	val, err := strconv.ParseInt(digits, 10, 64)
 	if err != nil {
 		return 0, fmt.Errorf("desborde o error numérico: %w", err)
 	}

@@ -307,7 +307,7 @@ func GetProvinciasByRegion(regionQuery string) []Provincia {
 		return []Provincia{}
 	}
 
-	var result []Provincia
+	result := []Provincia{}
 	for i := range provincias {
 		if provincias[i].RegionCode == reg.Code {
 			result = append(result, provincias[i])

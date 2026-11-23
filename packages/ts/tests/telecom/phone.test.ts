@@ -118,11 +118,16 @@ describe('Telecom Phone Suite (specs/tests/telecom_phone.json)', () => {
       expect(isEmergencyNumber('133')).toBe(true);
       expect(isEmergencyNumber('134')).toBe(true);
       expect(isEmergencyNumber('149')).toBe(true);
+      expect(isEmergencyNumber('911')).toBe(true);
+      expect(isEmergencyNumber('143')).toBe(true);
+      expect(isEmergencyNumber('1411')).toBe(true);
+      expect(isEmergencyNumber('1412')).toBe(true);
     });
 
     it('retorna false para números cortos no asignados', () => {
       expect(isEmergencyNumber('123')).toBe(false);
-      expect(isEmergencyNumber('911')).toBe(false);
+      expect(isEmergencyNumber('999')).toBe(false);
+      expect(isEmergencyNumber('1499')).toBe(false);
     });
   });
 });

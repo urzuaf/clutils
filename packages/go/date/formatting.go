@@ -101,6 +101,22 @@ func FormatDate(t time.Time, style ...DateFormatStyle) string {
 	}
 }
 
+// parseStrictDigits convierte una cadena compuesta exclusivamente por dígitos ASCII '0'-'9' a int.
+func parseStrictDigits(s string) (int, bool) {
+	if len(s) == 0 {
+		return 0, false
+	}
+	val := 0
+	for i := 0; i < len(s); i++ {
+		ch := s[i]
+		if ch < '0' || ch > '9' {
+			return 0, false
+		}
+		val = val*10 + int(ch-'0')
+	}
+	return val, true
+}
+
 // ParseDate interpreta una cadena de texto en formato chileno estandar ("DD/MM/YYYY" o "DD-MM-YYYY"),
 // garantizando que el primer segmento sea el dia y el segundo el mes (evitando inversion anglosajona MM/DD/YYYY).
 // Valida estrictamente dias por mes, anos bisiestos y rechaza formatos ISO o malformados.
@@ -125,8 +141,8 @@ func ParseDate(text string) (time.Time, error) {
 	}
 
 	dayStr, monthStr, yearStr := parts[0], parts[1], parts[2]
-	if len(dayStr) == 0 || len(monthStr) == 0 || len(yearStr) == 0 {
-		return time.Time{}, fmt.Errorf("componentes de fecha vacíos")
+	if len(dayStr) < 1 || len(dayStr) > 2 || len(monthStr) < 1 || len(monthStr) > 2 {
+		return time.Time{}, fmt.Errorf("componentes de día o mes inválidos")
 	}
 
 	// El ano debe tener 4 digitos
@@ -134,12 +150,11 @@ func ParseDate(text string) (time.Time, error) {
 		return time.Time{}, fmt.Errorf("el año debe tener 4 dígitos: %q", yearStr)
 	}
 
-	var day, month, year int
-	_, errDay := fmt.Sscanf(dayStr, "%d", &day)
-	_, errMonth := fmt.Sscanf(monthStr, "%d", &month)
-	_, errYear := fmt.Sscanf(yearStr, "%d", &year)
+	day, okDay := parseStrictDigits(dayStr)
+	month, okMonth := parseStrictDigits(monthStr)
+	year, okYear := parseStrictDigits(yearStr)
 
-	if errDay != nil || errMonth != nil || errYear != nil {
+	if !okDay || !okMonth || !okYear {
 		return time.Time{}, fmt.Errorf("componentes numéricos inválidos")
 	}
 

@@ -224,3 +224,24 @@ func TestGetProvinciaByComuna(t *testing.T) {
 		t.Errorf("GetProvinciaByComuna(inexistente) = %+v, %v; esperaba nil, false", prov, ok)
 	}
 }
+
+func TestGeoQARegressions(t *testing.T) {
+	// Unicode NFD (combining tilde \u0303)
+	c, ok := geo.FindComuna("N\u0303un\u0303oa")
+	if !ok || c == nil || c.Cut != "13120" {
+		t.Errorf("FindComuna(NFD Nunoa) = %+v, %v; esperaba Ñuñoa (13120)", c, ok)
+	}
+
+	// Coherencia entre FindComuna y SearchComunas[0] (prefijo antes de subcadena)
+	found, ok := geo.FindComuna("ma")
+	searched := geo.SearchComunas("ma")
+	if !ok || len(searched) == 0 || found.Cut != searched[0].Cut {
+		t.Errorf("FindComuna(ma) = %+v difiere de SearchComunas(ma)[0] = %+v", found, searched[0])
+	}
+
+	// SearchComunas con solo puntuación debe retornar slice vacío no-nil
+	res := geo.SearchComunas("---")
+	if res == nil || len(res) != 0 {
+		t.Errorf("SearchComunas(---) = %#v; esperaba slice vacío no-nil", res)
+	}
+}

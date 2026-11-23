@@ -33,4 +33,12 @@ describe('UF Formatting Suite (specs/tests/money_formatting.json)', () => {
       expect(formatUF(tc.amount, { decimals: tc.decimals, noSymbol: true })).toBe(tc.expected_no_symbol);
     });
   }
+
+  it('maneja NaN, Infinity y valores muy grandes (>= 1e20) sin lanzar error', () => {
+    expect(formatUF(NaN)).toBe('UF 0,00');
+    expect(formatUF(Infinity)).toBe('UF 0,00');
+    expect(formatUF(-Infinity)).toBe('UF 0,00');
+    expect(formatUF(1e20)).toBe('UF 100.000.000.000.000.000.000,00');
+    expect(formatUF(1e21)).toBe('UF 1.000.000.000.000.000.000.000,00');
+  });
 });

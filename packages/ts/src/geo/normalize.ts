@@ -14,55 +14,19 @@ export function normalizeSearch(s: string): string {
   }
 
   let res = '';
-  const lower = trimmed.toLowerCase();
+  const decomposed = trimmed.normalize('NFD').toLowerCase();
 
-  for (let i = 0; i < lower.length; i++) {
-    const ch = lower[i];
-    switch (ch) {
-      case 'á':
-      case 'à':
-      case 'ä':
-      case 'â':
-        res += 'a';
-        break;
-      case 'é':
-      case 'è':
-      case 'ë':
-      case 'ê':
-        res += 'e';
-        break;
-      case 'í':
-      case 'ì':
-      case 'ï':
-      case 'î':
-        res += 'i';
-        break;
-      case 'ó':
-      case 'ò':
-      case 'ö':
-      case 'ô':
-        res += 'o';
-        break;
-      case 'ú':
-      case 'ù':
-      case 'ü':
-      case 'û':
-        res += 'u';
-        break;
-      case 'ñ':
-        res += 'n';
-        break;
-      case "'":
-      case '.':
-      case '-':
-      case '_':
-      case '/':
-        // Omitir puntuación
-        break;
-      default:
-        res += ch;
-        break;
+  for (let i = 0; i < decomposed.length; i++) {
+    const code = decomposed.charCodeAt(i);
+    // Omitir marcas diacríticas combinantes Unicode (NFD: tildes, diéresis, virgulilla de ñ)
+    if (code >= 0x0300 && code <= 0x036f) {
+      continue;
     }
+    const ch = decomposed[i];
+    if (ch === "'" || ch === '.' || ch === '-' || ch === '_' || ch === '/') {
+      continue;
+    }
+    res += ch;
   }
 
   return res.trim().split(/\s+/).filter(Boolean).join(' ');
@@ -118,7 +82,14 @@ export function searchEntity<T>(
     }
   }
 
-  // Paso 3: Coincidencia parcial contenida
+  // Paso 3: Coincidencia por prefijo del nombre normalizado (coherente con searchAllEntities[0])
+  for (const item of items) {
+    if (normalizeSearch(getName(item)).startsWith(normQuery)) {
+      return item;
+    }
+  }
+
+  // Paso 4: Coincidencia parcial contenida
   for (const item of items) {
     if (normalizeSearch(getName(item)).includes(normQuery)) {
       return item;

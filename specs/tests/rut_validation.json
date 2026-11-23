@@ -280,6 +280,54 @@
       "expected_dv": null,
       "is_valid": false,
       "description": "RUT invalido por exceso de puntos separadores (mas de 2 puntos)"
+    },
+    {
+      "input": "+12345678-5",
+      "expected_clean": "+123456785",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por signo mas en el cuerpo"
+    },
+    {
+      "input": "12345678-.5",
+      "expected_clean": "123456785",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por punto despues del guion"
+    },
+    {
+      "input": "18123458-K.",
+      "expected_clean": "18123458K",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por punto final tras el digito verificador"
+    },
+    {
+      "input": ".12345678-5",
+      "expected_clean": "123456785",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por punto inicial"
+    },
+    {
+      "input": "1.2.345678-5",
+      "expected_clean": "123456785",
+      "expected_body": null,
+      "expected_dv": null,
+      "is_valid": false,
+      "description": "RUT invalido por agrupacion incorrecta de puntos de miles"
+    },
+    {
+      "input": "18.123.458K",
+      "expected_clean": "18123458K",
+      "expected_body": "18123458",
+      "expected_dv": "K",
+      "is_valid": true,
+      "description": "RUT valido con puntos bien ubicados sin guion"
     }
   ]
 }

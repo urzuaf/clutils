@@ -120,6 +120,30 @@
       "expected_day": 0,
       "valid": false,
       "description": "Texto vacio"
+    },
+    {
+      "input": "18abc/09xyz/2026",
+      "expected_year": 0,
+      "expected_month": 0,
+      "expected_day": 0,
+      "valid": false,
+      "description": "Componentes con sufijos alfabeticos deben rechazarse"
+    },
+    {
+      "input": "18/09/202x",
+      "expected_year": 0,
+      "expected_month": 0,
+      "expected_day": 0,
+      "valid": false,
+      "description": "Ano con letra final debe rechazarse"
+    },
+    {
+      "input": "01/01/0050",
+      "expected_year": 50,
+      "expected_month": 1,
+      "expected_day": 1,
+      "valid": true,
+      "description": "Ano historico menor a 100 debe preservarse sin mapearse a 1950"
     }
   ],
   "format_date": [

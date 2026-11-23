@@ -16,8 +16,8 @@ import {
   searchComunas,
   getRegionByComuna,
   getProvinciaByComuna,
-  normalizeSearch,
 } from '../../src/geo/index.js';
+import { normalizeSearch } from '../../src/geo/normalize.js';
 
 interface RegionCommuneCount {
   region_code: string;
@@ -283,11 +283,39 @@ describe('Geo DPA Suite (specs/tests/geo_dpa.json)', () => {
   describe('normalizeSearch', () => {
     it('debe remover tildes, eñes y caracteres especiales correctamente', () => {
       expect(normalizeSearch('Ñuñoa')).toBe('nunoa');
+      expect(normalizeSearch('N\u0303un\u0303oa')).toBe('nunoa');
       expect(normalizeSearch('Concepción')).toBe('concepcion');
       expect(normalizeSearch("O'Higgins")).toBe('ohiggins');
       expect(normalizeSearch('  Valparaíso - Viña  ')).toBe('valparaiso vina');
       expect(normalizeSearch('')).toBe('');
       expect(normalizeSearch('   ')).toBe('');
+    });
+  });
+
+  describe('QA Regresiones: inmutabilidad, NFD y coherencia find/search', () => {
+    it('debe soportar Unicode NFD en búsquedas de comunas', () => {
+      const c = findComuna('N\u0303un\u0303oa');
+      expect(c).not.toBeNull();
+      expect(c?.cut).toBe('13120');
+    });
+
+    it('findComuna debe coincidir con el primer resultado de searchComunas (prioridad de prefijo)', () => {
+      const found = findComuna('ma');
+      const searched = searchComunas('ma');
+      expect(found).not.toBeNull();
+      expect(found?.cut).toBe(searched[0].cut);
+      expect(found?.name).toBe('María Elena');
+    });
+
+    it('mutar un objeto retornado no debe corromper el catálogo interno', () => {
+      const rm = findRegion('13');
+      expect(rm).not.toBeNull();
+      rm!.name = 'Modificado';
+      expect(findRegion('13')?.name).toBe('Metropolitana de Santiago');
+
+      const regs = getRegiones();
+      regs[0].name = 'Modificado';
+      expect(getRegiones()[0].name).toBe('Arica y Parinacota');
     });
   });
 });

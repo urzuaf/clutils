@@ -41,4 +41,9 @@ describe('RUT Split Suite (specs/tests/rut_split.json)', () => {
       }
     });
   }
+
+  it('bodyInt lanza error si el cuerpo contiene letras intercaladas (ej. 12A34-K)', () => {
+    const parts = split('12A34-K');
+    expect(() => parts.bodyInt()).toThrow();
+  });
 });
