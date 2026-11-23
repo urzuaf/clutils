@@ -1,6 +1,6 @@
 {
   "name": "@urzuaf/clutils",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Suite de utilidades canonicas y de alto rendimiento para proyectos que operan en o con Chile",
   "author": "urzuaf",
   "license": "MIT",
@@ -15,9 +15,21 @@
   },
   "keywords": [
     "chile",
+    "clutils",
     "rut",
     "run",
-    "clutils",
+    "clp",
+    "uf",
+    "utm",
+    "iva",
+    "sii",
+    "comunas",
+    "regiones",
+    "dpa",
+    "cut",
+    "subtel",
+    "e164",
+    "timezone",
     "chilean",
     "utilities"
   ],
@@ -59,7 +71,8 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",

@@ -1,9 +1,9 @@
-# @urzuaf/clutils (TypeScript / JavaScript)
+# @urzuaf/clutils
 
-Suite de utilidades canónicas, de alto rendimiento y cero dependencias externas para proyectos que operan en o con Chile.
+Suite de utilidades canónicas, atómicas y sin dependencias externas para proyectos TypeScript / JavaScript que operan en o con **Chile**.
 
 [![npm version](https://img.shields.io/npm/v/@urzuaf/clutils.svg)](https://www.npmjs.com/package/@urzuaf/clutils)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-success.svg)](#)
 
 ---
@@ -11,8 +11,10 @@ Suite de utilidades canónicas, de alto rendimiento y cero dependencias externas
 ## Características
 
 - **Cero dependencias:** 0 dependencias en tiempo de ejecución.
-- **Tipado estricto:** 100% TypeScript con archivos de definición `.d.ts` y mapas de tipos completos.
-- **Dual Export:** Soporte nativo y optimizado para **ESM** (`import`) y **CommonJS** (`require`).
+- **Tipado estricto:** 100% TypeScript con archivos de definición `.d.ts` y mapas de fuentes.
+- **Dual Export:** Soporte nativo para **ESM** (`import`) y **CommonJS** (`require`).
+- **Tree-shaking granular:** Subpaths dedicados por dominio (`@urzuaf/clutils/rut`, `/money`, `/date`, `/telecom`, `/geo`).
+- **Universal:** Compatible con Node.js, Bun, Deno, navegadores y Edge Runtimes.
 
 ---
 
@@ -34,165 +36,235 @@ yarn add @urzuaf/clutils
 
 ---
 
-## Módulo de RUT (`@urzuaf/clutils/rut`)
+## Formas de importación
 
-Manejo integral de Rol Único Tributario (RUT / RUN) chileno: validación detallada, sanitización, formateo, enmascaramiento y generación sintética.
+### 1. Por subpath (recomendado para tree-shaking)
+```ts
+import { validate, format, mask } from '@urzuaf/clutils/rut';
+import { formatCLP, parseCLP, calculateIVA, toWords } from '@urzuaf/clutils/money';
+import { parseDate, formatDate, nowChile } from '@urzuaf/clutils/date';
+import { normalizePhone, formatPhone, isEmergencyNumber } from '@urzuaf/clutils/telecom';
+import { getRegiones, findComuna, searchComunas } from '@urzuaf/clutils/geo';
+```
 
-### Importación
+### 2. Por namespace desde la raíz
+```ts
+import { rut, money, date, telecom, geo } from '@urzuaf/clutils';
+
+rut.validate('18.123.458-K');
+money.formatCLP(1500000);
+date.formatDate(date.parseDate('18/09/2026'), 'formal');
+telecom.normalizePhone('9 1234 5678');
+geo.findComuna('nunoa');
+```
+
+### 3. CommonJS
+```js
+const { rut, money } = require('@urzuaf/clutils');
+const { findComuna } = require('@urzuaf/clutils/geo');
+```
+
+---
+
+## 1. RUT / RUN (`@urzuaf/clutils/rut`)
 
 ```ts
-// ESM / TypeScript
-import { 
-  validate, 
-  validateDetailed, 
-  RutErrorCode, 
-  clean, 
-  format, 
-  split, 
-  mask, 
+import {
+  validate,
+  validateDetailed,
+  RutErrorCode,
+  clean,
+  calculateDv,
+  format,
+  split,
+  mask,
   generate,
   generatePerson,
-  generateBusiness
+  generateBusiness,
+  generateBetween,
 } from '@urzuaf/clutils/rut';
 
-// O desde la raíz:
-// import { rut } from '@urzuaf/clutils';
-```
+validate('12.345.678-5');   // true
+validate('12.345.678-0');   // false
 
-```javascript
-// CommonJS
-const { validate, clean, format, mask } = require('@urzuaf/clutils/rut');
-```
-
----
-
-### 1. Validación
-
-#### Validación simple (`validate`)
-Devuelve un valor booleano (`true` o `false`):
-
-```ts
-validate('12.345.678-5'); // true
-validate('123456785');     // true
-validate('12345678-0');     // false (DV inválido)
-validate('12.34.5678-5');   // false (formato con puntos mal ubicados)
-```
-
-#### Validación detallada con códigos de error (`validateDetailed`)
-Identifica con exactitud por qué falló un RUT:
-
-```ts
-const result = validateDetailed('18.12A.458-K');
-
-if (!result.valid) {
-  switch (result.error?.code) {
-    case RutErrorCode.Empty:             // 1: El RUT está vacío
-      console.log('Ingresa un RUT');
-      break;
-    case RutErrorCode.MalformedFormat:   // 2: Puntos o guiones mal ubicados
-      console.log('El formato de puntos o guión es incorrecto');
-      break;
-    case RutErrorCode.InvalidLength:     // 3: Longitud fuera de rango (1M a 99M)
-      console.log('Longitud de RUT inválida');
-      break;
-    case RutErrorCode.InvalidCharacters: // 4: Caracteres no numéricos en el cuerpo
-      console.log('El cuerpo contiene caracteres no válidos');
-      break;
-    case RutErrorCode.InvalidDv:         // 5: Dígito verificador no coincide con módulo 11
-      console.log(`Dígito verificador incorrecto (esperado: ${result.error.expectedDv})`);
-      break;
-  }
+const err = validateDetailed('18.12A.458-K');
+if (err) {
+  console.log(err.code);    // RutErrorCode.InvalidCharacters (4)
+  console.log(err.message); // "el cuerpo del RUT contiene caracteres no numéricos"
 }
+
+clean('  18.123.458-k  ');  // "18123458K"
+calculateDv(18123458);      // "K"
+
+format('18123458k');                             // "18.123.458-K"
+format('18123458k', { dots: false });            // "18123458-K"
+format('18123458k', { hyphen: false });          // "18.123.458K"
+
+const parts = split('09.123.456-4');
+parts.body;      // "09123456"
+parts.dv;        // "4"
+parts.bodyInt(); // 9123456
+
+mask('18123458K');                               // "**.***.458-K"
+mask('18123458K', { maskChar: 'X' });            // "XX.XXX.458-K"
+mask('18123458K', { formatted: false });         // "*****458K"
+
+generate();                   // RUT válido aleatorio (1M - 28M)
+generatePerson();             // Persona natural (5M - 28M)
+generateBusiness();           // Persona jurídica / empresa (70M - 80M)
+generateBetween(10e6, 20e6);  // Rango personalizado
 ```
 
 ---
 
-### 2. Limpieza y Normalización (`clean`)
-
-Elimina puntos, espacios y caracteres separadores, conservando el cuerpo numérico y la letra verificadora mayúscula:
+## 2. Dinero e Impuestos (`@urzuaf/clutils/money`)
 
 ```ts
-clean(' 12.345.678-k '); // "12345678K"
-clean('7.654.321-0');    // "76543210"
+import {
+  formatCLP,
+  parseCLP,
+  formatUF,
+  formatUTM,
+  calculateIVA,
+  toWords,
+} from '@urzuaf/clutils/money';
+
+formatCLP(1500000);                                     // "$1.500.000"
+formatCLP(1500000, { symbol: 'CLP', space: true });     // "CLP 1.500.000"
+formatCLP(-2500, { negativeFormat: 'parentheses' });    // "($2.500)"
+
+parseCLP('$ 1.500.000');   // 1500000
+parseCLP('-CLP 2.500');    // -2500
+parseCLP('($2.500)');      // -2500
+
+formatUF(38450.25);                         // "UF 38.450,25"
+formatUF(38450.2548, { decimals: 4 });      // "UF 38.450,2548"
+formatUTM(67294);                           // "UTM 67.294"
+
+// Regla de cuadratura del SII (Neto + IVA === Bruto)
+calculateIVA(1000, false); // { neto: 1000, iva: 190, bruto: 1190 }
+calculateIVA(1000, true);  // { neto: 840, iva: 160, bruto: 1000 }
+
+toWords(1500000);                   // "un millón quinientos mil pesos"
+toWords(2000000);                   // "dos millones de pesos"
+toWords(100, { noCurrency: true }); // "cien"
 ```
 
 ---
 
-### 3. Formateo Flexible (`format`)
-
-Aplica diferentes estilos visuales de forma declarativa:
+## 3. Fecha y Husos Horarios (`@urzuaf/clutils/date`)
 
 ```ts
-// Con puntos y guión (por defecto)
-format('123456785'); 
-// => "12.345.678-5"
+import {
+  parseDate,
+  formatDate,
+  isWeekend,
+  nowChile,
+  nowMagallanes,
+  nowEasterIsland,
+  toChileTime,
+  toMagallanesTime,
+  toEasterIslandTime,
+  TZ_SANTIAGO,
+  TZ_PUNTA_ARENAS,
+  TZ_EASTER,
+} from '@urzuaf/clutils/date';
 
-// Sin puntos (solo guión)
-format('123456785', { dots: false }); 
-// => "12345678-5"
+const d = parseDate('18/09/2026');
+formatDate(d, 'numeric');        // "18/09/2026"
+formatDate(d, 'numeric_hyphen'); // "18-09-2026"
+formatDate(d, 'formal');         // "18 de septiembre de 2026"
+formatDate(d, 'full');           // "Viernes, 18 de septiembre de 2026"
+isWeekend(d);                    // false
 
-// Solo números y DV en mayúscula (sin puntos ni guión)
-format('12.345.678-k', { dots: false, hyphen: false }); 
-// => "12345678K"
+nowChile();                      // America/Santiago (UTC-4 invierno / UTC-3 verano)
+nowMagallanes();                 // America/Punta_Arenas (UTC-3 permanente)
+nowEasterIsland();               // Pacific/Easter (UTC-6 invierno / UTC-5 verano)
+
+const utc = new Date('2026-07-15T15:00:00Z');
+toChileTime(utc);
+toMagallanesTime(utc);
+toEasterIslandTime(utc);
 ```
 
 ---
 
-### 4. División de Partes (`split`)
-
-Separa el cuerpo numérico y el dígito verificador, proporcionando métodos para obtener el cuerpo como entero y el RUT normalizado:
+## 4. Telecomunicaciones (`@urzuaf/clutils/telecom`)
 
 ```ts
-const parts = split('12.345.678-5');
+import {
+  normalizePhone,
+  normalizeMobile,
+  validatePhone,
+  formatPhone,
+  getPhoneType,
+  isEmergencyNumber,
+} from '@urzuaf/clutils/telecom';
 
-console.log(parts.body);    // "12345678"
-console.log(parts.dv);      // "5"
-console.log(parts.bodyInt); // 12345678 (número)
+normalizePhone('9 1234 5678');         // "+56912345678"
+normalizePhone('02 2123 4567');        // "+56221234567"
+normalizeMobile('5612 3456');          // "+56956123456"
+
+validatePhone('+56 9 1234 5678');      // true
+validatePhone('12345');                // false
+
+formatPhone('912345678');                  // "+56 9 1234 5678"
+formatPhone('912345678', 'national');      // "9 1234 5678"
+formatPhone('322123456', 'international'); // "+56 32 212 3456"
+
+getPhoneType('+56 9 1234 5678');       // "mobile"
+getPhoneType('+56 44 123 4567');       // "voip"
+getPhoneType('800 123 456');           // "toll_free"
+getPhoneType('600 600 1234');          // "shared_cost"
+getPhoneType('133');                   // "emergency"
+
+isEmergencyNumber('133');              // true (Carabineros)
+isEmergencyNumber('1411');             // true (Metro de Santiago)
 ```
 
 ---
 
-### 5. Enmascaramiento Seguro (`mask`)
+## 5. Geografía y DPA Oficial (`@urzuaf/clutils/geo`)
 
-Oculta los primeros dígitos del cuerpo para interfaces visuales sensibles (tarjetas, comprobantes, balances):
+Catálogo completo oficial de Chile (SUBDERE / INE): **16 regiones**, **56 provincias** y **346 comunas** con Códigos Únicos Territoriales (CUT).
 
 ```ts
-// Por defecto: muestra los últimos 4 dígitos del cuerpo y el DV, formateado
-mask('123456785');
-// => "*.345.678-5"
+import {
+  getRegiones,
+  findRegion,
+  getProvincias,
+  getProvinciasByRegion,
+  findProvincia,
+  searchProvincias,
+  getRegionByProvincia,
+  getComunas,
+  getComunasByRegion,
+  getComunasByProvincia,
+  findComuna,
+  searchComunas,
+  getRegionByComuna,
+  getProvinciaByComuna,
+} from '@urzuaf/clutils/geo';
 
-// Sin puntos
-mask('123456785', { formatted: false });
-// => "***5678-5"
+getRegiones();                  // 16 regiones ordenadas de Norte a Sur
+findRegion('CL-RM');            // { code: "13", isoCode: "CL-RM", name: "Metropolitana de Santiago", ... }
+findRegion('VIII');             // { code: "08", isoCode: "CL-BI", name: "Biobío", ... }
 
-// Personalizando caracteres y cantidad de dígitos visibles
-mask('12.345.678-5', { visibleCount: 2, maskChar: 'X' });
-// => "XX.XXX.X78-5"
+getProvinciasByRegion('16');    // Diguillín, Itata, Punilla
+getComunasByRegion('CL-NB');    // 21 comunas de Ñuble
+getComunasByProvincia('131');   // 32 comunas de la Provincia de Santiago
+
+findComuna('13120');            // { cut: "13120", name: "Ñuñoa", provinciaCode: "131", regionCode: "13" }
+findComuna('nunoa');            // Tolerante a tildes, eñes, mayúsculas y Unicode NFD
+searchComunas('San');           // Múltiples coincidencias ordenadas por relevancia (autocompletado)
+
+getRegionByComuna('nunoa');     // Metropolitana de Santiago
+getProvinciaByComuna('chillan'); // Diguillín
+getRegionByProvincia('161');    // Ñuble
 ```
 
 ---
 
-### 6. Generación Sintética de RUTs (`generate`)
+## Licencia
 
-Generación determinista y válida de RUTs para suites de pruebas unitarias o seeds de bases de datos:
-
-```ts
-// RUT aleatorio dentro del rango general válido (1.000.000 - 28.000.000)
-const rutPrueba = generate(); 
-
-// RUT en rango de personas naturales (5.000.000 - 28.000.000)
-const rutPersona = generatePerson(); 
-
-// RUT en rango de empresas / personas jurídicas (60.000.000 - 90.000.000)
-const rutEmpresa = generateBusiness(); 
-
-// RUT dentro de un rango numérico específico
-const rutRango = generateBetween(10000000, 15000000, { dots: false }); 
-// => "12345678-5"
-```
-
----
-
-## 📄 Licencia
-
-MIT © urzuaf
+Distribuido bajo licencia **MIT**. Consulta el archivo [LICENSE](./LICENSE) para más detalles.
