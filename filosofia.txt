@@ -1,0 +1,16 @@
+Buenas a todos, gracias por tomarse el tiempo de revisar clutils.
+
+clutils es una librería que nació porque estaba aburrido de tener que reimplementar a cada rato lo mismo en distintos repos, principalmente todo lo relacionado al RUT,
+pero como todo buen programador sabe, antes de terminar de implementar una funcionalidad ya estás pensando en la siguiente.
+
+No sé cuántas funcionalidades voy a meter finalmente, pero puedo asegurar lo siguiente:
+
+1. Las funcionalidades de clutils serán atómicas y siempre contarán con múltiples tests unitarios para asegurar su funcionamiento.
+2. 0 dependencias, si importas clutils solo se importa clutils.
+3. Las funcionalidades serán siempre offline, ninguna incluirá llamadas de red de ningún tipo.
+4. Se busca implementar features robustas que no deban cambiar su lógica constantemente.
+5. Clutils es y se mantendrá gratis, no cobraría por funciones que pueden hacer en una tarde a mano o en un par de minutos con IA.
+6. Ninguna funcionalidad de clutils pretende ser una maravilla técnica de la programación, pero sí pretendo que funcionen bien, por lo que se agradece cualquier reporte de bug.
+7. Finalmente, las utilidades son genéricas, no intenten pedir lógica de negocio para algún nicho específico.
+
+Habiendo aclarado eso, vuelvo a agradecer por tomarse el tiempo de leer y espero ahorrarle unos minutos de desarrollo.
