@@ -57,3 +57,23 @@ jobs:
       - name: Build package
         working-directory: packages/ts
         run: npm run build
+
+  test-csharp:
+    name: C# (.NET) Tests & Pack
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '11.0.x'
+
+      - name: Restore & Test
+        working-directory: packages/csharp
+        run: dotnet test Clutils.sln --configuration Release
+
+      - name: Pack NuGet package
+        working-directory: packages/csharp
+        run: dotnet pack src/Clutils/Clutils.csproj --configuration Release --no-build

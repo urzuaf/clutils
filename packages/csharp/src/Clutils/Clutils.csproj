@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Metadatos del paquete NuGet -->
+    <PackageId>Clutils</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>urzuaf</Authors>
+    <Description>Suite de utilidades canónicas, atómicas y sin dependencias externas para proyectos que operan en o con Chile.</Description>
+    <PackageTags>chile;clutils;rut;run;chilean;utilities</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/urzuaf/clutils</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/urzuaf/clutils.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" Condition="Exists('..\..\README.md')" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,41 @@
+name: Publish NuGet (C#)
+
+on:
+  push:
+    tags:
+      - 'packages/csharp/v*'
+  workflow_dispatch:
+
+jobs:
+  publish-nuget:
+    name: Build, Test & Publish Clutils to NuGet
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '11.0.x'
+
+      - name: Test Clutils
+        working-directory: packages/csharp
+        run: dotnet test Clutils.sln --configuration Release
+
+      - name: Pack NuGet package
+        working-directory: packages/csharp
+        run: dotnet pack src/Clutils/Clutils.csproj --configuration Release --no-build --output ./nupkg
+
+      - name: NuGet Login (Trusted Publishing OIDC)
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+
+      - name: Push package to NuGet.org
+        working-directory: packages/csharp
+        run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate
