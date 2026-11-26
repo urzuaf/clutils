@@ -10,10 +10,10 @@
 
     <!-- Metadatos del paquete NuGet -->
     <PackageId>Clutils</PackageId>
-    <Version>0.1.0</Version>
+    <Version>1.0.0</Version>
     <Authors>urzuaf</Authors>
-    <Description>Suite de utilidades canónicas, atómicas y sin dependencias externas para proyectos que operan en o con Chile.</Description>
-    <PackageTags>chile;clutils;rut;run;chilean;utilities</PackageTags>
+    <Description>Suite de utilidades canónicas, atómicas y sin dependencias externas para proyectos que operan en o con Chile (RUT, CLP/UF/UTM/IVA, fechas/husos horarios, teléfonos SUBTEL y DPA oficial INE).</Description>
+    <PackageTags>chile;clutils;rut;run;clp;uf;utm;iva;sii;comunas;regiones;dpa;cut;subtel;e164;timezone;chilean;utilities</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/urzuaf/clutils</PackageProjectUrl>
     <RepositoryUrl>https://github.com/urzuaf/clutils.git</RepositoryUrl>

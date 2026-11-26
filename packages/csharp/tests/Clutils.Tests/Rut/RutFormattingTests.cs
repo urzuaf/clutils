@@ -206,6 +206,7 @@ namespace Clutils.Tests.RutTests
             Assert.Equal("**.***.**8-K", Rut.Mask("18123458K", new RutMaskOptions { VisibleCount = 2, Formatted = true }));
             Assert.Equal("*********", Rut.Mask("18123458K", new RutMaskOptions { VisibleCount = -5, Formatted = false }));
             Assert.Equal("**.***.***-*", Rut.Mask("18123458K", new RutMaskOptions { VisibleCount = -5, Formatted = true }));
+            Assert.Equal("**.***.458-K", Rut.Mask("18123458K", new RutMaskOptions { MaskChar = '\0' }));
         }
     }
 }

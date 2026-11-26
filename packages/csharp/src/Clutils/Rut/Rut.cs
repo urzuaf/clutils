@@ -319,7 +319,7 @@ namespace Clutils
                 return cleaned;
             }
 
-            char maskChar = options?.MaskChar ?? '*';
+            char maskChar = options == null || options.MaskChar == '\0' ? '*' : options.MaskChar;
             int visibleCount = Math.Max(options?.VisibleCount ?? 4, 0);
             bool formatted = options?.Formatted ?? true;
 
@@ -382,7 +382,17 @@ namespace Clutils
                 upper = tmp;
             }
 
-            int body = ThreadRandom.Value!.Next(lower, upper == int.MaxValue ? int.MaxValue : upper + 1);
+            int body;
+            if (upper < int.MaxValue)
+            {
+                body = ThreadRandom.Value!.Next(lower, upper + 1);
+            }
+            else
+            {
+                long offset = (long)(ThreadRandom.Value!.NextDouble() * ((double)upper - lower + 1.0));
+                long candidate = (long)lower + offset;
+                body = candidate > int.MaxValue ? int.MaxValue : (int)candidate;
+            }
             string dv = CalculateDv(body);
             return Format(body.ToString(CultureInfo.InvariantCulture) + dv, options);
         }
