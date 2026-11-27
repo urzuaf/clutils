@@ -146,7 +146,7 @@ export function mask(inputRut: string, options?: MaskOptions): string {
     return cleaned;
   }
 
-  const maskChar = options?.maskChar ?? '*';
+  const maskChar = options?.maskChar && options.maskChar !== '\0' ? options.maskChar : '*';
   const visibleCount = Math.max(options?.visibleCount ?? 4, 0);
   const formatted = options?.formatted ?? true;
 

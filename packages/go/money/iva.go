@@ -38,7 +38,7 @@ type IVAOptions struct {
 //	Bruto = Neto + IVA
 func CalculateIVA(amount int64, isBruto bool, opts ...IVAOptions) IVABreakdown {
 	rate := DefaultIVARate
-	if len(opts) > 0 && opts[0].Rate > 0 {
+	if len(opts) > 0 && !math.IsNaN(opts[0].Rate) && !math.IsInf(opts[0].Rate, 0) && opts[0].Rate > 0 {
 		rate = opts[0].Rate
 	}
 

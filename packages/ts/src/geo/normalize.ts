@@ -8,6 +8,9 @@
  * tildes, eñes, signos de puntuación y espacios redundantes.
  */
 export function normalizeSearch(s: string): string {
+  if (typeof s !== 'string') {
+    return '';
+  }
   const trimmed = s.trim();
   if (!trimmed) {
     return '';
@@ -44,6 +47,9 @@ export function searchEntity<T>(
   getIdents: (item: T) => string[],
   getName: (item: T) => string
 ): T | null {
+  if (typeof query !== 'string') {
+    return null;
+  }
   const trimmed = query.trim();
   if (!trimmed) {
     return null;
@@ -65,7 +71,11 @@ export function searchEntity<T>(
     for (const id of idents) {
       if (!id) continue;
       const idLower = id.toLowerCase();
-      if (idLower === trimmedLower || idLower === paddedLower || normalizeSearch(id) === normQuery) {
+      if (
+        idLower === trimmedLower ||
+        idLower === paddedLower ||
+        (normQuery.length > 0 && normalizeSearch(id) === normQuery)
+      ) {
         return item;
       }
     }
@@ -109,6 +119,9 @@ export function searchAllEntities<T>(
   getIdents: (item: T) => string[],
   getName: (item: T) => string
 ): T[] {
+  if (typeof query !== 'string') {
+    return [];
+  }
   const trimmed = query.trim();
   if (!trimmed) {
     return [];
@@ -136,7 +149,11 @@ export function searchAllEntities<T>(
     for (const id of getIdents(item)) {
       if (!id) continue;
       const idLower = id.toLowerCase();
-      if (idLower === trimmedLower || idLower === paddedLower || normalizeSearch(id) === normQuery) {
+      if (
+        idLower === trimmedLower ||
+        idLower === paddedLower ||
+        (normQuery.length > 0 && normalizeSearch(id) === normQuery)
+      ) {
         matched = true;
         break;
       }

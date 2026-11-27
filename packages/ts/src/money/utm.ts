@@ -34,7 +34,7 @@ export interface UTMFormatOptions {
  * ```
  */
 export function formatUTM(amount: number | bigint, options?: UTMFormatOptions): string {
-  const symbol = options?.noSymbol ? '' : (options?.symbol ?? 'UTM');
+  const symbol = options?.noSymbol ? '' : (options?.symbol ? options.symbol : 'UTM');
 
   let isNegative: boolean;
   let absDigits: string;

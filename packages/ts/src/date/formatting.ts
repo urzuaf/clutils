@@ -84,6 +84,10 @@ function parseStrictDigits(s: string): number | null {
 }
 
 export function formatDate(date: Date, style: DateFormatStyle = 'numeric'): string {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+    throw new RangeError('Fecha inválida');
+  }
+
   const day = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();

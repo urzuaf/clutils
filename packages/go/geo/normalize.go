@@ -74,7 +74,7 @@ func searchEntity[T any](
 			if id == "" {
 				continue
 			}
-			if strings.EqualFold(id, trimmed) || strings.EqualFold(id, padded) || normalizeSearch(id) == normQuery {
+			if strings.EqualFold(id, trimmed) || strings.EqualFold(id, padded) || (normQuery != "" && normalizeSearch(id) == normQuery) {
 				res := items[i]
 				return &res, true
 			}
@@ -144,7 +144,7 @@ func searchAllEntities[T any](
 			if id == "" {
 				continue
 			}
-			if strings.EqualFold(id, trimmed) || strings.EqualFold(id, padded) || normalizeSearch(id) == normQuery {
+			if strings.EqualFold(id, trimmed) || strings.EqualFold(id, padded) || (normQuery != "" && normalizeSearch(id) == normQuery) {
 				matched = true
 				break
 			}

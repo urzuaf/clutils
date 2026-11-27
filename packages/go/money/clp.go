@@ -5,6 +5,7 @@ package money
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -252,14 +253,25 @@ func ParseCLP(amount string) (int64, error) {
 		digits = numStr
 	}
 
-	val, err := strconv.ParseInt(digits, 10, 64)
+	uval, err := strconv.ParseUint(digits, 10, 64)
 	if err != nil {
 		return 0, fmt.Errorf("desborde o error numérico: %w", err)
 	}
 
 	if isNegative || hasParen {
-		val = -val
+		const minInt64Abs = uint64(math.MaxInt64) + 1
+		if uval > minInt64Abs {
+			return 0, fmt.Errorf("desborde numérico: monto menor al mínimo permitido")
+		}
+		if uval == minInt64Abs {
+			return math.MinInt64, nil
+		}
+		return -int64(uval), nil
 	}
 
-	return val, nil
+	if uval > uint64(math.MaxInt64) {
+		return 0, fmt.Errorf("desborde numérico: monto excede el máximo permitido")
+	}
+
+	return int64(uval), nil
 }

@@ -42,7 +42,7 @@ export function toTimezoneDate(date: Date, timeZone: string): Date {
 
   const result = new Date(0);
   result.setFullYear(y, m - 1, d);
-  result.setHours(h, min, s, 0);
+  result.setHours(h, min, s, date.getMilliseconds());
   return result;
 }
 

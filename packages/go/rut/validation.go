@@ -138,7 +138,7 @@ func ValidateDetailed(inputRut string) *ValidationError {
 				Message: "no se permiten puntos después del guión del RUT",
 			}
 		}
-		afterHyphen := Clean(after)
+		afterHyphen := []rune(Clean(after))
 		if len(afterHyphen) != 1 {
 			return &ValidationError{
 				Code:    ErrCodeMalformedFormat,
@@ -149,26 +149,27 @@ func ValidateDetailed(inputRut string) *ValidationError {
 	} else {
 		noSpace := stripWhitespace(trimmed)
 		if strings.Contains(noSpace, ".") {
-			if len(noSpace) < 2 || noSpace[len(noSpace)-1] == '.' {
+			noSpaceRunes := []rune(noSpace)
+			if len(noSpaceRunes) < 2 || noSpaceRunes[len(noSpaceRunes)-1] == '.' {
 				return &ValidationError{
 					Code:    ErrCodeMalformedFormat,
 					Message: "ubicación inválida de puntos separadores en el RUT",
 				}
 			}
-			bodyWithDots = noSpace[:len(noSpace)-1]
+			bodyWithDots = string(noSpaceRunes[:len(noSpaceRunes)-1])
 		}
 	}
 
 	if strings.Contains(bodyWithDots, ".") {
 		groups := strings.Split(bodyWithDots, ".")
-		if len(groups[0]) < 1 || len(groups[0]) > 3 {
+		if len([]rune(groups[0])) < 1 || len([]rune(groups[0])) > 3 {
 			return &ValidationError{
 				Code:    ErrCodeMalformedFormat,
 				Message: "ubicación inválida de puntos separadores en el RUT",
 			}
 		}
 		for i := 1; i < len(groups); i++ {
-			if len(groups[i]) != 3 {
+			if len([]rune(groups[i])) != 3 {
 				return &ValidationError{
 					Code:    ErrCodeMalformedFormat,
 					Message: "ubicación inválida de puntos separadores en el RUT",
@@ -178,18 +179,19 @@ func ValidateDetailed(inputRut string) *ValidationError {
 	}
 
 	cleaned := Clean(inputRut)
+	cleanedRunes := []rune(cleaned)
 
-	// 2. Control de longitud
-	if len(cleaned) < 2 || len(cleaned) > 10 {
+	// 2. Control de longitud (por runas, no por bytes UTF-8)
+	if len(cleanedRunes) < 2 || len(cleanedRunes) > 10 {
 		return &ValidationError{
 			Code:    ErrCodeInvalidLength,
 			Message: "la longitud del RUT es inválida",
 		}
 	}
 
-	lastIndex := len(cleaned) - 1
-	body := cleaned[:lastIndex]
-	dv := string(cleaned[lastIndex])
+	lastIndex := len(cleanedRunes) - 1
+	body := string(cleanedRunes[:lastIndex])
+	dv := string(cleanedRunes[lastIndex])
 
 	// 3. Control de cuerpo numérico (estrictamente dígitos ASCII '0'-'9', rechaza '+' o '-')
 	for i := 0; i < len(body); i++ {

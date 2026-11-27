@@ -100,7 +100,7 @@ function normalizeIntegerAmount(amount: number | bigint): { isNegative: boolean;
  * ```
  */
 export function formatCLP(amount: number | bigint, options?: CLPFormatOptions): string {
-  const symbol = options?.noSymbol ? '' : (options?.symbol ?? '$');
+  const symbol = options?.noSymbol ? '' : (options?.symbol ? options.symbol : '$');
   const space = options?.space ?? false;
   const negativeFormat = options?.negativeFormat ?? '-sign';
 

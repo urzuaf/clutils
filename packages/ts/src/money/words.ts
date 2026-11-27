@@ -177,7 +177,8 @@ export function toWords(amount: number | bigint, options?: ToWordsOptions): stri
   } else if (!Number.isFinite(amount)) {
     normalized = 0n;
   } else {
-    normalized = BigInt(Math.trunc(amount));
+    const rounded = Math.sign(amount) * Math.round(Math.abs(amount));
+    normalized = BigInt(rounded);
   }
 
   const isNegative = normalized < 0n;

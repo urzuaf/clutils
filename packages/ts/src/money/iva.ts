@@ -48,9 +48,12 @@ function roundHalfAway(val: number): number {
 }
 
 export function calculateIVA(amount: number, isBruto: boolean, options?: IVAOptions): IVABreakdown {
-  const rate = options?.rate !== undefined && options.rate > 0 ? options.rate : DEFAULT_IVA_RATE;
+  const rate =
+    options?.rate !== undefined && Number.isFinite(options.rate) && options.rate > 0
+      ? options.rate
+      : DEFAULT_IVA_RATE;
 
-  if (amount === 0) {
+  if (!Number.isFinite(amount) || amount === 0) {
     return { neto: 0, iva: 0, bruto: 0 };
   }
 

@@ -30,7 +30,8 @@ func DefaultFormatOptions() FormatOptions {
 //	Format("18123458K", FormatOptions{Dots: true, Hyphen: false}) // "18.123.458K"
 func Format(inputRut string, opts ...FormatOptions) string {
 	cleaned := Clean(inputRut)
-	if len(cleaned) < 2 {
+	runes := []rune(cleaned)
+	if len(runes) < 2 {
 		return cleaned
 	}
 
@@ -39,9 +40,9 @@ func Format(inputRut string, opts ...FormatOptions) string {
 		config = opts[0]
 	}
 
-	lastIndex := len(cleaned) - 1
-	body := cleaned[:lastIndex]
-	dv := string(cleaned[lastIndex])
+	lastIndex := len(runes) - 1
+	body := runes[:lastIndex]
+	dv := runes[lastIndex]
 
 	var b strings.Builder
 	b.Grow(len(cleaned) + 4)
@@ -51,14 +52,14 @@ func Format(inputRut string, opts ...FormatOptions) string {
 		if config.Dots && i > 0 && (bodyLen-i)%3 == 0 {
 			b.WriteByte('.')
 		}
-		b.WriteByte(body[i])
+		b.WriteRune(body[i])
 	}
 
 	if config.Hyphen {
 		b.WriteByte('-')
 	}
 
-	b.WriteString(dv)
+	b.WriteRune(dv)
 
 	return b.String()
 }
@@ -71,6 +72,14 @@ type RutParts struct {
 
 // BodyInt convierte el cuerpo del RUT a un entero. Retorna error si el cuerpo contiene caracteres no numéricos.
 func (p RutParts) BodyInt() (int, error) {
+	if len(p.Body) == 0 {
+		return 0, errors.New("el cuerpo del RUT está vacío")
+	}
+	for i := 0; i < len(p.Body); i++ {
+		if p.Body[i] < '0' || p.Body[i] > '9' {
+			return 0, errors.New("el cuerpo del RUT contiene caracteres no numéricos")
+		}
+	}
 	return strconv.Atoi(p.Body)
 }
 
@@ -85,13 +94,14 @@ func (p RutParts) BodyInt() (int, error) {
 //	parts, err := Split("1-9")          // RutParts{Body: "1", Dv: "9"}, nil
 func Split(inputRut string) (RutParts, error) {
 	cleaned := Clean(inputRut)
-	if len(cleaned) < 2 {
+	runes := []rune(cleaned)
+	if len(runes) < 2 {
 		return RutParts{}, errors.New("el RUT no contiene cuerpo y dígito verificador suficientes")
 	}
 
-	lastIndex := len(cleaned) - 1
-	body := cleaned[:lastIndex]
-	dv := string(cleaned[lastIndex])
+	lastIndex := len(runes) - 1
+	body := string(runes[:lastIndex])
+	dv := string(runes[lastIndex])
 
 	return RutParts{
 		Body: body,
@@ -125,7 +135,8 @@ func DefaultMaskOptions() MaskOptions {
 //	Mask("18.123.458-k", MaskOptions{Formatted: false}) // "*****458K"
 func Mask(inputRut string, opts ...MaskOptions) string {
 	cleaned := Clean(inputRut)
-	if len(cleaned) < 2 {
+	runes := []rune(cleaned)
+	if len(runes) < 2 {
 		return cleaned
 	}
 
@@ -142,25 +153,25 @@ func Mask(inputRut string, opts ...MaskOptions) string {
 	}
 
 	if !config.Formatted {
-		if config.VisibleCount >= len(cleaned) {
+		if config.VisibleCount >= len(runes) {
 			return cleaned
 		}
-		maskLen := max(len(cleaned)-config.VisibleCount, 0)
+		maskLen := max(len(runes)-config.VisibleCount, 0)
 		var b strings.Builder
 		b.Grow(len(cleaned))
 		for range maskLen {
 			b.WriteRune(config.MaskChar)
 		}
-		b.WriteString(cleaned[maskLen:])
+		b.WriteString(string(runes[maskLen:]))
 		return b.String()
 	}
 
 	formatted := Format(cleaned)
-	if config.VisibleCount >= len(cleaned) {
+	if config.VisibleCount >= len(runes) {
 		return formatted
 	}
 
-	totalAlphanumeric := len(cleaned)
+	totalAlphanumeric := len(runes)
 	threshold := totalAlphanumeric - config.VisibleCount
 
 	var b strings.Builder

@@ -49,8 +49,12 @@ function isAllZeros(s: string): boolean {
  * ```
  */
 export function formatUF(amount: number, options?: UFFormatOptions): string {
-  const decimals = options?.decimals !== undefined && options.decimals > 0 ? Math.trunc(options.decimals) : 2;
-  const symbol = options?.noSymbol ? '' : (options?.symbol ?? 'UF');
+  const rawDecimals =
+    options?.decimals !== undefined && Number.isFinite(options.decimals)
+      ? Math.trunc(options.decimals)
+      : 2;
+  const decimals = rawDecimals > 0 ? Math.min(rawDecimals, 100) : 2;
+  const symbol = options?.noSymbol ? '' : (options?.symbol ? options.symbol : 'UF');
 
   const safeAmount = Number.isFinite(amount) ? amount : 0;
   let isNegative = safeAmount < 0;

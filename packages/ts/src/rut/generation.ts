@@ -51,8 +51,10 @@ export function generate(options?: FormatOptions): string {
  * ```
  */
 export function generateBetween(min: number, max: number, options?: FormatOptions): string {
-  let lower = min < DEFAULT_GENERAL_MIN ? DEFAULT_GENERAL_MIN : min;
-  let upper = max < DEFAULT_GENERAL_MIN ? DEFAULT_GENERAL_MAX : max;
+  const safeMin = Number.isFinite(min) ? Math.trunc(min) : DEFAULT_GENERAL_MIN;
+  const safeMax = Number.isFinite(max) ? Math.trunc(max) : DEFAULT_GENERAL_MAX;
+  let lower = safeMin < DEFAULT_GENERAL_MIN ? DEFAULT_GENERAL_MIN : safeMin;
+  let upper = safeMax < DEFAULT_GENERAL_MIN ? DEFAULT_GENERAL_MAX : safeMax;
 
   if (lower > upper) {
     const temp = lower;
